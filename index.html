@@ -559,5 +559,82 @@ function updateFitnessCards() {
 updateFitnessCards();
 
 </script>
+```html
+<!-- Water Tracker -->
+<section class="card" id="water-tracker">
+  <h2>💧 Water Tracker</h2>
+  <p>Daily Goal: 8 glasses</p>
+  <div id="water-count">0 / 8 glasses</div>
+  <button onclick="changeWater(-1)">−</button>
+  <button onclick="changeWater(1)">+ Add Glass</button>
+</section>
+
+<!-- Daily Streak -->
+<section class="card" id="daily-streak">
+  <h2>🔥 Daily Streak</h2>
+  <p id="streak-count">0 days</p>
+  <button onclick="completeToday()">Complete Today</button>
+</section>
+
+<!-- Weekly Progress -->
+<section class="card" id="weekly-progress">
+  <h2>📊 Weekly Progress</h2>
+  <p>This week: <span id="weekly-count">0</span> completed days</p>
+</section>
+
+<style>
+#water-tracker, #daily-streak, #weekly-progress {
+  background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+  color: #4c1d95;
+  border-radius: 18px;
+  padding: 20px;
+  margin: 16px 0;
+  box-shadow: 0 4px 12px #8b5cf633;
+}
+#water-tracker button, #daily-streak button {
+  background: #8b5cf6;
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 5px;
+  cursor: pointer;
+}
+</style>
+
+<script>
+let water = Number(localStorage.getItem('fitWater') || 0);
+let streak = Number(localStorage.getItem('fitStreak') || 0);
+let completed = JSON.parse(localStorage.getItem('fitWeek') || '[]');
+
+function showProgress() {
+  document.getElementById('water-count').textContent =
+    water + ' / 8 glasses';
+  document.getElementById('streak-count').textContent =
+    streak + ' days';
+  document.getElementById('weekly-count').textContent =
+    completed.length;
+}
+
+function changeWater(amount) {
+  water = Math.max(0, Math.min(8, water + amount));
+  localStorage.setItem('fitWater', water);
+  showProgress();
+}
+
+function completeToday() {
+  const today = new Date().toISOString().slice(0, 10);
+  if (!completed.includes(today)) {
+    completed.push(today);
+    completed = completed.slice(-7);
+    streak++;
+    localStorage.setItem('fitWeek', JSON.stringify(completed));
+    localStorage.setItem('fitStreak', streak);
+  }
+  showProgress();
+}
+
+showProgress();
+</script>
 </body>
 </html>
