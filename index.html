@@ -648,7 +648,18 @@ showProgress();
     <option value="Both">🍽️ Both</option>
   </select>
 
-  <h3>🍱 Today's Meals</h3>
+  <h3>🍱 Tod```html
+<h3>🍱 Meals for <span id="today-date"></span></h3>
+
+<script>
+document.getElementById('today-date').textContent =
+  new Date().toLocaleDateString('en-IN', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+</script>
+```ay's Meals</h3>
 
   <label for="breakfast">Breakfast</label>
   <input id="breakfast" placeholder="e.g. Idli, dosa, eggs">
