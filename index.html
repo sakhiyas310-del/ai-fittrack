@@ -636,5 +636,88 @@ function completeToday() {
 
 showProgress();
 </script>
+```html
+<!-- Food Preference -->
+<section class="card" id="food-preference">
+  <h2>🥗 Food Preference</h2>
+
+  <label for="foodType">Choose your food type:</label>
+  <select id="foodType">
+    <option value="Veg">🥦 Vegetarian</option>
+    <option value="Non-Veg">🍗 Non-Vegetarian</option>
+    <option value="Both">🍽️ Both</option>
+  </select>
+
+  <h3>🍱 Today's Meals</h3>
+
+  <label for="breakfast">Breakfast</label>
+  <input id="breakfast" placeholder="e.g. Idli, dosa, eggs">
+
+  <label for="lunch">Lunch</label>
+  <input id="lunch" placeholder="e.g. Rice, vegetables, chicken">
+
+  <label for="dinner">Dinner</label>
+  <input id="dinner" placeholder="e.g. Chapati, paneer">
+
+  <button onclick="saveFoodPlan()">Save Food Plan 💜</button>
+  <p id="foodSaved"></p>
+</section>
+
+<style>
+#food-preference {
+  background: linear-gradient(135deg, #f3e8ff, #fce7f3);
+  color: #4c1d95;
+  border-radius: 18px;
+  padding: 20px;
+  margin: 16px 0;
+}
+#food-preference label,
+#food-preference input,
+#food-preference select {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 8px 0;
+}
+#food-preference input,
+#food-preference select {
+  padding: 10px;
+  border: 1px solid #c4b5fd;
+  border-radius: 8px;
+}
+#food-preference button {
+  background: #8b5cf6;
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 10px;
+}
+</style>
+
+<script>
+function saveFoodPlan() {
+  const plan = {
+    type: document.getElementById('foodType').value,
+    breakfast: document.getElementById('breakfast').value,
+    lunch: document.getElementById('lunch').value,
+    dinner: document.getElementById('dinner').value
+  };
+
+  localStorage.setItem('aiFitFoodPlan', JSON.stringify(plan));
+  document.getElementById('foodSaved').textContent =
+    '💜 Food plan saved successfully!';
+}
+
+(function loadFoodPlan() {
+  const plan = JSON.parse(
+    localStorage.getItem('aiFitFoodPlan') || '{}'
+  );
+  if (plan.type) document.getElementById('foodType').value = plan.type;
+  ['breakfast', 'lunch', 'dinner'].forEach(meal => {
+    if (plan[meal]) document.getElementById(meal).value = plan[meal];
+  });
+})();
+</script>
 </body>
 </html>
