@@ -105,6 +105,35 @@
   </div>
   <div class="section-head"><div><h2>Your activity chart</h2><p>Daily workout minutes from your saved entries.</p></div></div><div class="card"><div class="chart" id="progressChart"></div></div>
   <div class="notice">Your activity chart uses the workouts you log in this browser. It isn't a medical assessment or a measure of your worth.</div>
+  
+<section id="progress" class="page-section">
+  <h1>My Fitness Progress 💜</h1>
+  <p class="subtitle">Small steps every day!</p>
+
+  <div class="card">
+    <h2>💧 Water Tracker</h2>
+    <p>Daily goal: 8 glasses</p>
+    <h3><span id="waterCount">0</span> / 8 glasses</h3>
+    <progress id="waterProgress" value="0" max="8" style="width:100%"></progress>
+    <button class="btn btn-primary" type="button" onclick="addWater()">+ Add a glass</button>
+    <button class="btn" type="button" onclick="resetWater()">Reset</button>
+  </div>
+
+  <div class="card">
+    <h2>🔥 Daily Streak</h2>
+    <p>Days you check in and stay active.</p>
+    <h3><span id="streakCount">0</span> day streak</h3>
+    <button class="btn btn-primary" type="button" onclick="checkIn()">Complete today's check-in</button>
+  </div>
+
+  <div class="card">
+    <h2>📊 Weekly Progress</h2>
+    <p>Workout check-ins this week</p>
+    <h3><span id="weekCount">0</span> / 7 days</h3>
+    <progress id="weekProgress" value="0" max="7" style="width:100%"></progress>
+  </div>
+</section>
+
 </section>
 <section class="panel" id="plan">
   <h1>Your Workout Plan ✨</h1><p class="subtitle">Create a personalised starter plan based on your fitness goal, experience level, and available days.</p>
@@ -468,6 +497,67 @@ renderProfile();
 renderAll();
 syncPlannerWithProfile();
 generateWorkoutPlan();
+  
+function addWater() {
+  const today = new Date().toISOString().slice(0, 10);
+  let data = JSON.parse(localStorage.getItem("fittrack_water") || "{}");
+  if (data.date !== today) data = { date: today, count: 0 };
+  data.count = Math.min(8, data.count + 1);
+  localStorage.setItem("fittrack_water", JSON.stringify(data));
+  updateFitnessCards();
+}
+
+function resetWater() {
+  const today = new Date().toISOString().slice(0, 10);
+  localStorage.setItem("fittrack_water", JSON.stringify({ date: today, count: 0 }));
+  updateFitnessCards();
+}
+
+function checkIn() {
+  const today = new Date().toISOString().slice(0, 10);
+  let data = JSON.parse(localStorage.getItem("fittrack_checkins") || "{}");
+  if (data[today]) return;
+  data[today] = true;
+  localStorage.setItem("fittrack_checkins", JSON.stringify(data));
+  updateFitnessCards();
+}
+
+function updateFitnessCards() {
+  const today = new Date().toISOString().slice(0, 10);
+  let water = JSON.parse(localStorage.getItem("fittrack_water") || "{}");
+  if (water.date !== today) water = { date: today, count: 0 };
+
+  const waterCount = document.getElementById("waterCount");
+  const waterProgress = document.getElementById("waterProgress");
+  if (waterCount) waterCount.textContent = water.count;
+  if (waterProgress) waterProgress.value = water.count;
+
+  const checks = JSON.parse(localStorage.getItem("fittrack_checkins") || "{}");
+  const dates = Object.keys(checks).filter(date => checks[date]).sort();
+  const streakCount = document.getElementById("streakCount");
+  if (streakCount) {
+    let streak = 0;
+    let day = new Date();
+    while (checks[day.toISOString().slice(0, 10)]) {
+      streak++;
+      day.setDate(day.getDate() - 1);
+    }
+    streakCount.textContent = streak;
+  }
+
+  const now = new Date();
+  const monday = new Date(now);
+  monday.setHours(0, 0, 0, 0);
+  monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+  const weekDates = dates.filter(date => date >= monday.toISOString().slice(0, 10));
+  const weekCount = document.getElementById("weekCount");
+  const weekProgress = document.getElementById("weekProgress");
+  if (weekCount) weekCount.textContent = weekDates.length;
+  if (weekProgress) weekProgress.value = weekDates.length;
+}
+
+updateFitnessCards();
+
 </script>
 </body>
 </html>
