@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI FitTrack | Your Wellness Space</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+:root{--purple:#8865df;--purple-dark:#7049c6;--lavender:#f0eaff;--bg:#faf8ff;--text:#30284a;--muted:#958da8;--border:#eee8f7;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px}button,input,select{font:inherit}button{cursor:pointer}
+.app{display:flex;min-height:100vh}.sidebar{width:245px;flex-shrink:0;background:white;border-right:1px solid var(--border);padding:28px 18px;display:flex;flex-direction:column;min-height:100vh}
+.brand{display:flex;align-items:center;gap:11px;padding:0 8px 34px}.brand-icon{width:42px;height:42px;border-radius:14px;background:var(--purple);display:grid;place-items:center;color:white;font-size:23px}.brand-name{font:700 21px 'Outfit',sans-serif;letter-spacing:-.7px}.brand-name span{color:var(--purple)}
+.menu-label{color:#b0a7c0;font-size:10px;font-weight:700;letter-spacing:1.5px;padding:0 12px;margin:8px 0 12px}.nav-btn{display:flex;align-items:center;gap:12px;width:100%;padding:12px;margin-bottom:5px;border:0;border-radius:12px;background:transparent;color:#89819c;text-align:left;font-weight:600;transition:.2s}.nav-btn .ico{width:22px;text-align:center;font-size:18px}.nav-btn:hover,.nav-btn.active{background:var(--lavender);color:var(--purple-dark)}
+.sidebar-bottom{margin-top:auto}.mini-card{background:linear-gradient(145deg,#f0eaff,#fdf0f8);border-radius:17px;padding:17px;margin:20px 2px 8px}.mini-card .spark{font-size:24px}.mini-card h4{font:700 15px 'Outfit',sans-serif;margin:9px 0 5px}.mini-card p{font-size:12px;line-height:1.6;color:#817692;margin:0}
+.main{flex:1;min-width:0;padding:28px 34px 45px;max-width:1600px;margin:auto;width:100%}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:28px}.breadcrumb{color:var(--muted);font-size:12px}.breadcrumb b{color:var(--text)}.top-actions{display:flex;align-items:center;gap:12px}.date-chip{padding:10px 13px;border:1px solid var(--border);border-radius:11px;background:white;color:#777087;font-size:12px}.avatar{width:39px;height:39px;border-radius:13px;background:#e9ddff;color:#7551c5;display:grid;place-items:center;font-weight:800;font-size:15px}
+.panel{display:none}.panel.active{display:block;animation:appear .25s ease}@keyframes appear{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}h1,h2,h3,h4,p{margin-top:0}h1,h2,h3,h4{font-family:'Outfit',sans-serif}h1{font-size:29px;letter-spacing:-.8px;margin-bottom:8px}h2{font-size:19px;margin-bottom:5px}h3{font-size:16px;margin-bottom:7px}.subtitle{color:var(--muted);line-height:1.6;margin-bottom:25px}
+.hero{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:190px;padding:29px 32px;border-radius:23px;background:linear-gradient(110deg,#eae0ff 0%,#f1eaff 52%,#ffeaf5 100%);margin-bottom:24px}.hero-copy{position:relative;z-index:1;max-width:510px}.eyebrow{color:#8b6bc9;font-size:10px;font-weight:800;letter-spacing:1.8px;margin-bottom:12px}.hero h1{font-size:30px;line-height:1.2}.hero p{color:#786c91;line-height:1.7;margin:0 0 18px;max-width:440px}.hero-art{position:relative;z-index:1;padding:0 10px;display:flex;align-items:center;justify-content:center;max-width:300px}.hero-art img{display:block;width:100%;max-width:260px;height:auto;object-fit:contain}
+.btn{border:0;border-radius:11px;padding:11px 16px;font-weight:700;font-size:12px}.btn-primary{background:var(--purple);color:white;box-shadow:0 5px 12px #8865df30}.btn-primary:hover{background:var(--purple-dark)}.btn-light{background:white;color:var(--purple-dark);border:1px solid var(--border)}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:27px 0 15px}.section-head p{color:var(--muted);font-size:12px;margin:4px 0 0}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}.card{background:white;border:1px solid var(--border);border-radius:18px;padding:20px;min-width:0}.stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:17px}.stat-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:13px;font-size:20px}.ic-purple{background:#f0eaff}.ic-pink{background:#ffedf5}.ic-blue{background:#eaf4ff}.ic-green{background:#e5f8ef}.stat-label{font-size:12px;color:var(--muted)}.stat-number{font:700 27px 'Outfit',sans-serif;letter-spacing:-.6px;margin:0 0 5px}.stat-note{font-size:11px;color:#9b92aa}.content-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(270px,1fr);gap:18px}.chart-card{min-height:255px}.chart{height:145px;display:flex;align-items:flex-end;justify-content:space-around;gap:10px;padding-top:18px}.chart-col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:9px;height:100%;flex:1}.bar{width:min(30px,75%);border-radius:8px 8px 4px 4px;background:#e8defc;min-height:8px;transition:height .3s}.bar.today{background:linear-gradient(#a78bfa,#8061db)}.day{color:#a49bb4;font-size:10px}.goal-card{background:linear-gradient(145deg,#fff,#fbf7ff)}.progress-ring{width:112px;height:112px;border-radius:50%;margin:22px auto 16px;display:grid;place-items:center;background:conic-gradient(#9675e7 0deg 0deg,#eee7f8 0deg 360deg);position:relative}.progress-ring:before{content:"";position:absolute;inset:9px;border-radius:50%;background:white}.progress-ring div{position:relative;text-align:center}.progress-ring strong{display:block;font:700 25px 'Outfit',sans-serif}.progress-ring span{color:var(--muted);font-size:10px}.center{text-align:center}.goal-card p{color:var(--muted);font-size:12px;line-height:1.6;margin-bottom:0}
+.quick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.quick-card{border:1px solid var(--border);border-radius:17px;background:white;padding:20px}.quick-emoji{font-size:26px;margin-bottom:14px}.quick-card p{color:var(--muted);font-size:12px;line-height:1.6;min-height:38px}
+.form-card{max-width:720px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.field{display:flex;flex-direction:column;gap:7px;margin-bottom:15px}.field label{font-size:12px;font-weight:700;color:#6e647f}.field input,.field select{width:100%;padding:12px 13px;border:1px solid #e8e0f2;border-radius:11px;background:#fdfcff;outline:none;color:var(--text)}.field input:focus,.field select:focus{border-color:#a48ae9;box-shadow:0 0 0 3px #eee7ff}
+.list{display:flex;flex-direction:column;gap:10px;margin-top:17px}.list-item{display:flex;align-items:center;gap:12px;padding:13px;background:#fcfaff;border:1px solid var(--border);border-radius:13px}.list-emoji{width:39px;height:39px;border-radius:12px;background:#f0eaff;display:grid;place-items:center;font-size:19px}.list-info{flex:1;min-width:0}.list-info strong{display:block;font-size:13px;overflow-wrap:anywhere}.list-info small{display:block;color:var(--muted);margin-top:4px;font-size:11px}.empty{text-align:center;padding:27px 12px;color:var(--muted);background:#fcfaff;border-radius:13px;margin-top:14px;line-height:1.8}
+.plan-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:20px}.plan-day{border:1px solid var(--border);background:white;border-radius:16px;padding:18px}.plan-day .tag{display:inline-block;padding:5px 9px;border-radius:7px;background:#f0eaff;color:#795ac3;font-size:10px;font-weight:800;margin-bottom:10px}.plan-day p{color:var(--muted);font-size:12px;line-height:1.7;margin:0}.notice{background:#fff7e9;border-radius:11px;padding:12px 14px;color:#927443;font-size:11px;line-height:1.6;margin-top:16px}.toast{position:fixed;bottom:24px;right:24px;background:#30284a;color:white;padding:13px 18px;border-radius:12px;box-shadow:0 8px 25px #30284a22;z-index:10;display:none}footer{text-align:center;color:#aaa1b9;font-size:11px;padding-top:32px}
+@media(max-width:1050px){.sidebar{width:205px}.main{padding:24px 22px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.app{display:block}.sidebar{width:100%;min-height:0;padding:15px;position:static;border-right:0;border-bottom:1px solid var(--border)}.brand{padding:0 5px 15px}.menu-label,.sidebar-bottom{display:none}.nav-list{display:flex;overflow-x:auto;gap:5px}.nav-btn{width:auto;white-space:nowrap;margin:0;padding:10px}.nav-btn .ico{width:auto}.main{padding:22px 15px}.hero{padding:24px 21px;min-height:170px}.hero-art{max-width:190px;padding:0}.hero-art img{max-width:180px}.hero h1{font-size:25px}.content-grid{grid-template-columns:1fr}.quick-grid{grid-template-columns:1fr}.quick-card p{min-height:0}.plan-grid{grid-template-columns:1fr}.topbar{margin-bottom:20px}.date-chip{display:none}}
+@media(max-width:420px){.stats{grid-template-columns:1fr 1fr;gap:9px}.card{padding:14px}.stat-number{font-size:23px}.form-grid{grid-template-columns:1fr}.hero-art{display:none}h1{font-size:25px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="brand-icon">✿</div><div class="brand-name">AI Fit<span>Track</span></div></div>
+  <div class="menu-label">WORKSPACE</div>
+  <nav class="nav-list">
+    <button class="nav-btn active" data-panel="dashboard"><span class="ico">⌂</span>Dashboard</button>
+    <button class="nav-btn" data-panel="profile"><span class="ico">♙</span>My Profile</button>
+    <button class="nav-btn" data-panel="workouts"><span class="ico">♧</span>Workouts</button>
+    <button class="nav-btn" data-panel="food"><span class="ico">♡</span>Food Tracker</button>
+    <button class="nav-btn" data-panel="progress"><span class="ico">▥</span>My Progress</button>
+    <button class="nav-btn" data-panel="plan"><span class="ico">✧</span>AI Workout Plan</button>
+  </nav>
+  <div class="sidebar-bottom"><div class="mini-card"><div class="spark">🌷</div><h4>Small steps matter!</h4><p>Every healthy choice is a little win. Keep going at your own pace.</p></div></div>
+</aside>
+<main class="main">
+<header class="topbar"><div class="breadcrumb">Workspace &nbsp; / &nbsp; <b id="crumb">Dashboard</b></div><div class="top-actions"><button class="btn btn-light" id="languageToggle" type="button" aria-label="Change language">தமிழ்</button><div class="date-chip" id="today"></div><div class="avatar" id="avatar">D</div></div></header>
+<section class="panel active" id="dashboard">
+  <div class="hero"><div class="hero-copy"><div class="eyebrow">YOUR PERSONAL WELLNESS SPACE ✨</div><h1 id="welcome">Hello, Superstar! 💜</h1><p>A little movement, balanced meals, and time for yourself. Your wellness journey starts here.</p><button class="btn btn-primary" data-go="workouts">+ Log a workout</button></div><div class="hero-art"><img src="fitness-banner.png" alt="Fitness illustration"></div></div>
+  <div class="section-head"><div><h2>Your activity overview</h2><p>Every little step counts.</p></div></div>
+  <div class="stats">
+    <div class="card"><div class="stat-top"><span class="stat-label">Workout time</span><span class="stat-icon ic-purple">🏃</span></div><div class="stat-number"><span id="minutes">0</span><small style="font-size:13px"> min</small></div><div class="stat-note">Total minutes logged</div></div>
+    <div class="card"><div class="stat-top"><span class="stat-label">Workouts</span><span class="stat-icon ic-blue">💪</span></div><div class="stat-number" id="workoutCount">0</div><div class="stat-note">Activities completed</div></div>
+    <div class="card"><div class="stat-top"><span class="stat-label">Meals logged</span><span class="stat-icon ic-pink">🍓</span></div><div class="stat-number" id="mealCount">0</div><div class="stat-note">Food entries recorded</div></div>
+    <div class="card"><div class="stat-top"><span class="stat-label">Wellness points</span><span class="stat-icon ic-green">✿</span></div><div class="stat-number" id="points">0</div><div class="stat-note">Earned by logging activity</div></div>
+  </div>
+  <div class="section-head"><div><h2>Your weekly movement</h2><p>Workout minutes by day</p></div></div>
+  <div class="content-grid">
+    <div class="card chart-card"><div class="section-head" style="margin:0"><div><h3>Activity this week</h3><p>Your logged workouts</p></div><span>📊</span></div><div class="chart" id="chart"></div></div>
+    <div class="card goal-card center"><h3>Your activity snapshot</h3><p>A little activity can make a lovely difference.</p><div class="progress-ring" id="progressRing"><div><strong id="ringValue">0%</strong><span>of 150 min</span></div></div><p id="goalText">Log your first workout to begin!</p></div>
+  </div>
+  <div class="section-head"><div><h2>Quick actions</h2><p>Make today count, your way.</p></div></div>
+  <div class="quick-grid">
+    <div class="quick-card"><div class="quick-emoji">🏋️‍♀️</div><h3>Log a workout</h3><p>Record movement that feels good for you.</p><button class="btn btn-light" data-go="workouts">Add workout →</button></div>
+    <div class="quick-card"><div class="quick-emoji">🥗</div><h3>Track your food</h3><p>Keep a gentle record of your meals.</p><button class="btn btn-light" data-go="food">Add a meal →</button></div>
+    <div class="quick-card"><div class="quick-emoji">🌟</div><h3>Explore your plan</h3><p>Find a simple starter activity plan.</p><button class="btn btn-light" data-go="plan">View plan →</button></div>
+  </div>
+</section>
+<section class="panel" id="profile">
+  <h1>My Profile 💜</h1><p class="subtitle">Make this wellness space your own.</p>
+  <div class="card form-card"><h2>Your details</h2><p class="subtitle">Your details stay in this browser in this starter version.</p>
+    <form id="profileForm">
+      <div class="field"><label for="name">Your name</label><input id="name" placeholder="Enter your name" required maxlength="50"></div>
+      <div class="form-grid"><div class="field"><label for="age">Age (optional)</label><input id="age" type="number" min="1" max="120" placeholder="Your age"></div><div class="field"><label for="goal">Wellness goal</label><select id="goal"><option>General fitness</option><option>Build strength</option><option>Improve endurance</option><option>Stay active</option><option>Improve flexibility</option></select></div></div>
+      <div class="field"><label for="experience">Activity experience</label><select id="experience"><option>Beginner</option><option>Intermediate</option><option>Experienced</option></select></div>
+      <button class="btn btn-primary" type="submit">Save profile ✓</button>
+    </form>
+  </div>
+</section>
+<section class="panel" id="workouts">
+  <h1>Workout Tracker 🏃</h1><p class="subtitle">Celebrate movement in all its forms. Start where you are.</p>
+  <div class="card form-card"><h2>Add a workout</h2><p class="subtitle">Walking, dancing, stretching — it all counts.</p>
+    <form id="workoutForm"><div class="field"><label for="exercise">Activity name</label><input id="exercise" placeholder="e.g. Walking, yoga, dancing" required maxlength="80"></div>
+      <div class="form-grid"><div class="field"><label for="duration">Duration (minutes)</label><input id="duration" type="number" min="1" max="1440" placeholder="e.g. 20" required></div><div class="field"><label for="workoutType">Activity type</label><select id="workoutType"><option>Cardio</option><option>Strength</option><option>Flexibility</option><option>Walking</option><option>Other</option></select></div></div>
+      <button class="btn btn-primary" type="submit">+ Save workout</button>
+    </form>
+  </div>
+  <div class="section-head"><div><h2>Workout history</h2><p>Your saved activities.</p></div></div><div id="workoutHistory"></div>
+</section>
+<section class="panel" id="food">
+  <h1>Food Tracker 🍓</h1><p class="subtitle">Notice your meals with curiosity, not judgment. All foods can fit.</p>
+  <div class="card form-card"><h2>Log a meal</h2>
+    <form id="foodForm"><div class="field"><label for="mealName">Food or meal name</label><input id="mealName" placeholder="e.g. Rice and vegetables" required maxlength="100"></div>
+      <div class="form-grid"><div class="field"><label for="mealType">Meal type</label><select id="mealType"><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option></select></div><div class="field"><label for="mealDate">Date</label><input id="mealDate" type="date" required></div></div>
+      <button class="btn btn-primary" type="submit">+ Save meal</button>
+    </form>
+  </div>
+  <div class="section-head"><div><h2>Meal history</h2><p>Your food diary.</p></div></div><div id="foodHistory"></div>
+</section>
+<section class="panel" id="progress">
+  <h1>My Progress 📈</h1><p class="subtitle">Progress isn't perfection. Notice the small wins.</p>
+  <div class="stats">
+    <div class="card"><div class="stat-label">Workout minutes</div><div class="stat-number" id="pMinutes">0</div><div class="stat-note">Total logged</div></div>
+    <div class="card"><div class="stat-label">Workouts logged</div><div class="stat-number" id="pWorkouts">0</div><div class="stat-note">All activities</div></div>
+    <div class="card"><div class="stat-label">Meals recorded</div><div class="stat-number" id="pMeals">0</div><div class="stat-note">All food entries</div></div>
+    <div class="card"><div class="stat-label">Active days</div><div class="stat-number" id="pDays">0</div><div class="stat-note">Days with a workout</div></div>
+  </div>
+  <div class="section-head"><div><h2>Your activity chart</h2><p>Daily workout minutes from your saved entries.</p></div></div><div class="card"><div class="chart" id="progressChart"></div></div>
+  <div class="notice">Your activity chart uses the workouts you log in this browser. It isn't a medical assessment or a measure of your worth.</div>
+</section>
+<section class="panel" id="plan">
+  <h1>Your Workout Plan ✨</h1><p class="subtitle">Create a personalised starter plan based on your fitness goal, experience level, and available days.</p>
+  <div class="card form-card"><h2>Personalise Your Plan 💜</h2>
+    <form id="plannerForm">
+      <div class="field"><label for="plannerGoal">Fitness Goal</label><select id="plannerGoal"><option value="General fitness">General Fitness</option><option value="Build strength">Build Strength</option><option value="Improve endurance">Improve Endurance</option><option value="Stay active">Stay Active</option><option value="Improve flexibility">Improve Flexibility</option></select></div>
+      <div class="form-grid"><div class="field"><label for="plannerLevel">Experience Level</label><select id="plannerLevel"><option value="Beginner">Beginner</option><option value="Intermediate">Intermediate</option><option value="Experienced">Experienced</option></select></div>
+      <div class="field"><label for="plannerDays">Workout Days Per Week</label><select id="plannerDays"><option value="3">3 days</option><option value="4">4 days</option><option value="5">5 days</option><option value="6">6 days</option><option value="7">7 days</option></select></div></div>
+      <button class="btn btn-primary" type="submit">Generate My Workout Plan ✨</button>
+    </form>
+    <div id="plannerResult" aria-live="polite"></div>
+    <div class="notice">These are general starter suggestions, not medical advice. Adjust activities to your comfort, rest when needed, and stop if an activity causes pain or makes you feel unwell.</div>
+  </div>
+</section>
+<footer>Made with 💜 for your wellness journey · AI FitTrack</footer>
+</main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+let currentLanguage = "en";
+const read = (key, fallback) => {
+  try { return JSON.parse(localStorage.getItem("fittrack_" + key)) ?? fallback; }
+  catch (error) { return fallback; }
+};
+const write = (key, value) => {
+  try { localStorage.setItem("fittrack_" + key, JSON.stringify(value)); }
+  catch (error) { showToast("Could not save data in this browser."); }
+};
+let profile = read("profile", {name:"", age:"", goal:"General fitness", experience:"Beginner"});
+let workouts = read("workouts", []);
+let meals = read("meals", []);
+const todayISO = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+};
+$("today").textContent = new Date().toLocaleDateString("en-IN", {day:"numeric", month:"short", year:"numeric"});
+$("mealDate").value = todayISO();
+
+function showToast(message) {
+  const el = $("toast");
+  el.textContent = message;
+  if (currentLanguage === "ta" && translations[message]) message = translations[message];
+  el.textContent = message;
+  el.style.display = "block";
+  clearTimeout(window.fitToastTimer);
+  window.fitToastTimer = setTimeout(() => { el.style.display = "none"; }, 2400);
+}
+function go(panel) {
+  document.querySelectorAll(".panel").forEach(p => p.classList.toggle("active", p.id === panel));
+  document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.panel === panel));
+  const active = document.querySelector(`.nav-btn[data-panel="${panel}"]`);
+  $("crumb").textContent = active ? active.textContent.trim() : "Dashboard";
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+document.querySelectorAll(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.panel)));
+document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));
+
+$("profileForm").addEventListener("submit", e => {
+  e.preventDefault();
+  profile = {name:$("name").value.trim(), age:$("age").value, goal:$("goal").value, experience:$("experience").value};
+  write("profile", profile);
+  renderProfile();
+  syncPlannerWithProfile();
+  showToast("Profile saved successfully! 💜");
+});
+$("workoutForm").addEventListener("submit", e => {
+  e.preventDefault();
+  workouts.unshift({id:Date.now(), name:$("exercise").value.trim(), minutes:Number($("duration").value), type:$("workoutType").value, date:todayISO()});
+  write("workouts", workouts);
+  $("workoutForm").reset();
+  renderAll();
+  showToast("Workout saved! Well done 🌷");
+});
+$("foodForm").addEventListener("submit", e => {
+  e.preventDefault();
+  meals.unshift({id:Date.now(), name:$("mealName").value.trim(), type:$("mealType").value, date:$("mealDate").value || todayISO()});
+  write("meals", meals);
+  $("mealName").value = "";
+  $("mealDate").value = todayISO();
+  renderAll();
+  showToast("Meal saved! 💜");
+});
+function renderProfile() {
+  $("name").value = profile.name || "";
+  $("age").value = profile.age || "";
+  $("goal").value = profile.goal || "General fitness";
+  $("experience").value = profile.experience || "Beginner";
+  $("welcome").textContent = profile.name ? `Hello, ${profile.name}! 💜` : "Hello, Superstar! 💜";
+  $("avatar").textContent = profile.name ? profile.name.charAt(0).toUpperCase() : "D";
+  if (currentLanguage === "ta") { $("welcome").textContent = profile.name ? `வணக்கம், ${profile.name}! 💜` : "வணக்கம், சூப்பர்ஸ்டார்! 💜"; translatePage(); }
+}
+function safe(value) {
+  return String(value).replace(/[&<>"']/g, c => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"}[c]));
+}
+
+// Text translations for the app interface. Workout-plan cards are rendered
+// separately by generateWorkoutPlan(), so their day/activity translations stay in sync.
+const translations = {
+  "WORKSPACE":"பணியிடம்",
+  "Dashboard":"முகப்புப் பலகை", "My Profile":"என் சுயவிவரம்", "Workouts":"உடற்பயிற்சிகள்",
+  "Food Tracker":"உணவு கண்காணிப்பு", "My Progress":"என் முன்னேற்றம்", "AI Workout Plan":"AI உடற்பயிற்சி திட்டம்",
+  "Small steps matter!":"சிறிய படிகளும் முக்கியம்!", "Every healthy choice is a little win. Keep going at your own pace.":"ஒவ்வொரு ஆரோக்கியமான தேர்வும் ஒரு சிறிய வெற்றி. உங்கள் வேகத்தில் தொடர்ந்து செல்லுங்கள்.",
+  "YOUR PERSONAL WELLNESS SPACE ✨":"உங்களுக்கான ஆரோக்கிய இடம் ✨", "Hello, Superstar! 💜":"வணக்கம், சூப்பர்ஸ்டார்! 💜",
+  "A little movement, balanced meals, and time for yourself. Your wellness journey starts here.":"சிறிது உடல் இயக்கம், சமநிலையான உணவு, உங்களுக்கான நேரம் — உங்கள் ஆரோக்கியப் பயணம் இங்கே தொடங்குகிறது.",
+  "+ Log a workout":"+ உடற்பயிற்சியைப் பதிவு செய்", "Your activity overview":"உங்கள் செயல்பாட்டு விவரம்", "Every little step counts.":"ஒவ்வொரு சிறிய படியும் முக்கியம்.",
+  "Workout time":"உடற்பயிற்சி நேரம்", " min":" நிமிடங்கள்", "Total minutes logged":"மொத்தமாகப் பதிவு செய்த நிமிடங்கள்", "Workouts":"உடற்பயிற்சிகள்",
+  "Activities completed":"முடித்த செயல்பாடுகள்", "Meals logged":"பதிவு செய்த உணவுகள்", "Food entries recorded":"பதிவு செய்யப்பட்ட உணவுகள்", "Wellness points":"ஆரோக்கியப் புள்ளிகள்", "Earned by logging activity":"செயல்பாடுகளைப் பதிவு செய்து பெற்றவை",
+  "Your weekly movement":"உங்கள் வாராந்திர இயக்கம்", "Workout minutes by day":"ஒவ்வொரு நாளின் உடற்பயிற்சி நிமிடங்கள்", "Activity this week":"இந்த வார செயல்பாடு", "Your logged workouts":"நீங்கள் பதிவு செய்த உடற்பயிற்சிகள்",
+  "Your activity snapshot":"உங்கள் செயல்பாட்டு நிலை", "A little activity can make a lovely difference.":"சிறிதளவு செயல்பாடும் நல்ல மாற்றத்தை ஏற்படுத்தும்.", "of 150 min":"150 நிமிடங்களில்", "Log your first workout to begin!":"தொடங்க உங்கள் முதல் உடற்பயிற்சியைப் பதிவு செய்யுங்கள்!",
+  "Lovely work showing up for yourself!":"உங்களுக்காக நேரம் ஒதுக்கியது அருமை!", "Every minute counts. Go at your own pace.":"ஒவ்வொரு நிமிடமும் முக்கியம். உங்கள் வேகத்தில் செல்லுங்கள்.",
+  "Quick actions":"விரைவு செயல்கள்", "Make today count, your way.":"இன்றைய நாளை உங்கள் வழியில் சிறப்பாக்குங்கள்.", "Log a workout":"உடற்பயிற்சியைப் பதிவு செய்", "Record movement that feels good for you.":"உங்களுக்கு ஏற்ற உடல் இயக்கத்தைப் பதிவு செய்யுங்கள்.", "Add workout →":"உடற்பயிற்சியைச் சேர் →",
+  "Track your food":"உணவைப் பதிவு செய்", "Keep a gentle record of your meals.":"உங்கள் உணவுகளை எளிமையாகப் பதிவு செய்யுங்கள்.", "Add a meal →":"உணவைச் சேர் →", "Explore your plan":"உங்கள் திட்டத்தைப் பாருங்கள்", "Find a simple starter activity plan.":"எளிய தொடக்கப் பயிற்சித் திட்டத்தைப் பாருங்கள்.", "View plan →":"திட்டத்தைப் பார் →",
+  "My Profile 💜":"என் சுயவிவரம் 💜", "Make this wellness space your own.":"இந்த ஆரோக்கிய இடத்தை உங்களுக்கேற்றதாக மாற்றுங்கள்.", "Your details":"உங்கள் விவரங்கள்", "Your details stay in this browser in this starter version.":"இந்த ஆரம்ப பதிப்பில் உங்கள் விவரங்கள் இந்த உலாவியிலேயே சேமிக்கப்படும்.",
+  "Your name":"உங்கள் பெயர்", "Enter your name":"உங்கள் பெயரை உள்ளிடுங்கள்", "Age (optional)":"வயது (விருப்பம்)", "Your age":"உங்கள் வயது", "Wellness goal":"ஆரோக்கிய இலக்கு", "Activity experience":"உடற்பயிற்சி அனுபவம்", "Save profile ✓":"சுயவிவரத்தைச் சேமி ✓",
+  "Workout Tracker 🏃":"உடற்பயிற்சி கண்காணிப்பு 🏃", "Celebrate movement in all its forms. Start where you are.":"எல்லா வகையான உடல் இயக்கத்தையும் கொண்டாடுங்கள். இருக்கும் நிலையிலிருந்து தொடங்குங்கள்.", "Add a workout":"உடற்பயிற்சியைச் சேர்", "Walking, dancing, stretching — it all counts.":"நடை, நடனம், நீட்டிப்புப் பயிற்சி — அனைத்தும் கணக்கில் வரும்.",
+  "Activity name":"செயல்பாட்டின் பெயர்", "e.g. Walking, yoga, dancing":"எ.கா. நடை, யோகா, நடனம்", "Duration (minutes)":"நேரம் (நிமிடங்கள்)", "e.g. 20":"எ.கா. 20", "Activity type":"செயல்பாட்டு வகை", "Cardio":"கார்டியோ", "Strength":"வலிமைப் பயிற்சி", "Flexibility":"நெகிழ்வுத்தன்மை", "Walking":"நடைப்பயிற்சி", "Other":"மற்றவை", "+ Save workout":"+ உடற்பயிற்சியைச் சேமி", "Workout history":"உடற்பயிற்சி வரலாறு", "Your saved activities.":"நீங்கள் சேமித்த செயல்பாடுகள்.",
+  "Food Tracker 🍓":"உணவு கண்காணிப்பு 🍓", "Notice your meals with curiosity, not judgment. All foods can fit.":"தீர்ப்பிடாமல், ஆர்வத்துடன் உங்கள் உணவைக் கவனியுங்கள். எல்லா உணவுகளுக்கும் இடமுண்டு.", "Log a meal":"உணவைப் பதிவு செய்", "Food or meal name":"உணவு அல்லது உணவின் பெயர்", "e.g. Rice and vegetables":"எ.கா. சாதம் மற்றும் காய்கறிகள்", "Meal type":"உணவு வகை", "Breakfast":"காலை உணவு", "Lunch":"மதிய உணவு", "Dinner":"இரவு உணவு", "Snack":"சிற்றுண்டி", "Date":"தேதி", "+ Save meal":"+ உணவைச் சேமி", "Meal history":"உணவு வரலாறு", "Your food diary.":"உங்கள் உணவுப் பதிவு.",
+  "My Progress 📈":"என் முன்னேற்றம் 📈", "Progress isn't perfection. Notice the small wins.":"முன்னேற்றம் என்றால் முழுமை அல்ல. சிறிய வெற்றிகளையும் கவனியுங்கள்.", "Workout minutes":"உடற்பயிற்சி நிமிடங்கள்", "Total logged":"மொத்தப் பதிவு", "Workouts logged":"பதிவு செய்த உடற்பயிற்சிகள்", "All activities":"அனைத்து செயல்பாடுகளும்", "Meals recorded":"பதிவு செய்த உணவுகள்", "All food entries":"அனைத்து உணவுப் பதிவுகளும்", "Active days":"செயல்பட்ட நாட்கள்", "Days with a workout":"உடற்பயிற்சி செய்த நாட்கள்", "Your activity chart":"உங்கள் செயல்பாட்டு வரைபடம்", "Daily workout minutes from your saved entries.":"சேமித்த பதிவுகளின் அடிப்படையில் தினசரி உடற்பயிற்சி நிமிடங்கள்.", "Your activity chart uses the workouts you log in this browser. It isn't a medical assessment or a measure of your worth.":"இந்த உலாவியில் நீங்கள் பதிவு செய்த உடற்பயிற்சிகளே இந்த வரைபடத்தில் பயன்படுத்தப்படும். இது மருத்துவ மதிப்பீடோ உங்கள் மதிப்பை அளக்கும் கருவியோ அல்ல.",
+  "Your Workout Plan ✨":"உங்கள் உடற்பயிற்சி திட்டம் ✨", "Create a personalised starter plan based on your fitness goal, experience level, and available days.":"உங்கள் உடற்தகுதி இலக்கு, அனுபவ நிலை, கிடைக்கும் நாட்கள் ஆகியவற்றின் அடிப்படையில் தொடக்கத் திட்டத்தை உருவாக்குங்கள்.", "Personalise Your Plan 💜":"உங்கள் திட்டத்தைத் தனிப்பயனாக்குங்கள் 💜", "Fitness Goal":"உடற்தகுதி இலக்கு", "General Fitness":"பொதுவான உடற்தகுதி", "Build Strength":"வலிமையை அதிகரித்தல்", "Improve Endurance":"சகிப்புத்தன்மையை மேம்படுத்துதல்", "Stay Active":"சுறுசுறுப்பாக இருத்தல்", "Improve Flexibility":"நெகிழ்வுத்தன்மையை மேம்படுத்துதல்", "Experience Level":"அனுபவ நிலை", "Beginner":"தொடக்கநிலை", "Intermediate":"இடைநிலை", "Experienced":"அனுபவம் உள்ளவர்", "Workout Days Per Week":"வாரத்தில் உடற்பயிற்சி நாட்கள்", "3 days":"3 நாட்கள்", "4 days":"4 நாட்கள்", "5 days":"5 நாட்கள்", "6 days":"6 நாட்கள்", "7 days":"7 நாட்கள்", "Generate My Workout Plan ✨":"எனது உடற்பயிற்சி திட்டத்தை உருவாக்கு ✨",
+  "These are general starter suggestions, not medical advice. Adjust activities to your comfort, rest when needed, and stop if an activity causes pain or makes you feel unwell.":"இவை பொதுவான தொடக்கப் பரிந்துரைகள்; மருத்துவ ஆலோசனை அல்ல. உங்களுக்கு வசதியானபடி பயிற்சிகளை மாற்றுங்கள், தேவையானபோது ஓய்வெடுங்கள். வலி அல்லது உடல்நலக் குறைவு ஏற்பட்டால் பயிற்சியை நிறுத்துங்கள்.",
+  "Made with 💜 for your wellness journey · AI FitTrack":"உங்கள் ஆரோக்கியப் பயணத்திற்காக 💜 · AI FitTrack", "No workouts":"உடற்பயிற்சிகள் இல்லை", "No meals":"உணவுகள் இல்லை", "yet.":"இன்னும் இல்லை.", "Add your first entry whenever you're ready.":"தயாராக இருக்கும்போது முதல் பதிவைச் சேருங்கள்.", "Delete entry":"பதிவை நீக்கு", "No workouts yet.":"இன்னும் உடற்பயிற்சிகள் இல்லை.", "No meals yet.":"இன்னும் உணவுப் பதிவுகள் இல்லை.", "Profile saved successfully! 💜":"சுயவிவரம் வெற்றிகரமாகச் சேமிக்கப்பட்டது! 💜", "Workout saved! Well done 🌷":"உடற்பயிற்சி சேமிக்கப்பட்டது! அருமை 🌷", "Meal saved! 💜":"உணவு சேமிக்கப்பட்டது! 💜", "Entry removed":"பதிவு நீக்கப்பட்டது", "Your workout plan is ready! ✨":"உங்கள் உடற்பயிற்சி திட்டம் தயார்! ✨", "Could not save data in this browser.":"இந்த உலாவியில் தரவைச் சேமிக்க முடியவில்லை."
+};
+const reverseTranslations = Object.fromEntries(Object.entries(translations).map(([en, ta]) => [ta, en]));
+function translatePage() {
+  const map = currentLanguage === "ta" ? translations : reverseTranslations;
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(node => {
+    const raw = node.nodeValue;
+    const trimmed = raw.trim();
+    if (!trimmed) return;
+    const translated = map[trimmed];
+    if (translated) node.nodeValue = raw.replace(trimmed, translated);
+  });
+  document.querySelectorAll("input[placeholder],button[aria-label]").forEach(el => {
+    const attr = el.hasAttribute("placeholder") ? "placeholder" : "aria-label";
+    const value = el.getAttribute(attr);
+    if (currentLanguage === "ta" && translations[value]) el.setAttribute(attr, translations[value]);
+    else if (currentLanguage === "en" && reverseTranslations[value]) el.setAttribute(attr, reverseTranslations[value]);
+  });
+  document.documentElement.lang = currentLanguage === "ta" ? "ta" : "en";
+  const toggle = $("languageToggle");
+  toggle.textContent = currentLanguage === "ta" ? "English" : "தமிழ்";
+  toggle.setAttribute("aria-label", currentLanguage === "ta" ? "Switch to English" : "தமிழுக்கு மாற்று");
+}
+$("languageToggle").addEventListener("click", () => {
+  currentLanguage = currentLanguage === "en" ? "ta" : "en";
+  translatePage();
+  generateWorkoutPlan();
+  const activePanel = document.querySelector(".panel.active");
+  if (activePanel) {
+    const activeButton = document.querySelector(`.nav-btn[data-panel="${activePanel.id}"]`);
+    $("crumb").textContent = activeButton ? activeButton.textContent.trim() : (currentLanguage === "ta" ? "முகப்புப் பலகை" : "Dashboard");
+  }
+});
+function renderList(target, items, kind) {
+  const el = $(target);
+  if (!items.length) {
+    el.innerHTML = `<div class="empty">🌷<br>No ${kind === "workout" ? "workouts" : "meals"} yet.<br>Add your first entry whenever you're ready.</div>`;
+    return;
+  }
+  el.innerHTML = '<div class="list">' + items.map(item => {
+    const icon = kind === "workout" ? "🏃" : "🥗";
+    const detail = kind === "workout" ? `${item.minutes} minutes · ${item.type}` : item.type;
+    return `<div class="list-item"><div class="list-emoji">${icon}</div><div class="list-info"><strong>${safe(item.name)}</strong><small>${safe(detail)} · ${safe(item.date)}</small></div><button class="btn btn-light" data-delete="${Number(item.id)}" data-kind="${kind}" aria-label="Delete entry">✕</button></div>`;
+  }).join("") + "</div>";
+}
+function renderChart(target) {
+  const now = new Date();
+  const values = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(now.getDate() - i);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    values.push({day:d.toLocaleDateString("en-US",{weekday:"short"}), value:workouts.filter(w => w.date === key).reduce((sum,w) => sum + Number(w.minutes || 0), 0), isToday:key === todayISO()});
+  }
+  const max = Math.max(30, ...values.map(v => v.value));
+  $(target).innerHTML = values.map(v => `<div class="chart-col"><div class="bar ${v.isToday ? "today" : ""}" title="${v.value} minutes" style="height:${Math.max(6, v.value/max*100)}%"></div><span class="day">${v.day}</span></div>`).join("");
+}
+function renderAll() {
+  const total = workouts.reduce((sum,w) => sum + Number(w.minutes || 0), 0);
+  $("minutes").textContent = total;
+  $("workoutCount").textContent = workouts.length;
+  $("mealCount").textContent = meals.length;
+  $("points").textContent = workouts.length * 10 + meals.length * 2;
+  $("pMinutes").textContent = total;
+  $("pWorkouts").textContent = workouts.length;
+  $("pMeals").textContent = meals.length;
+  $("pDays").textContent = new Set(workouts.map(w => w.date)).size;
+  const pct = Math.min(100, Math.round(total / 150 * 100));
+  $("ringValue").textContent = pct + "%";
+  $("goalText").textContent = total >= 150 ? "Lovely work showing up for yourself!" : "Every minute counts. Go at your own pace.";
+  const deg = pct * 3.6;
+  $("progressRing").style.background = `conic-gradient(#9675e7 0deg ${deg}deg,#eee7f8 ${deg}deg 360deg)`;
+  renderList("workoutHistory", workouts, "workout");
+  renderList("foodHistory", meals, "food");
+  renderChart("chart");
+  renderChart("progressChart");
+  if (currentLanguage === "ta") translatePage();
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-delete]");
+  if (!b) return;
+  const id = Number(b.dataset.delete);
+  if (b.dataset.kind === "workout") workouts = workouts.filter(x => Number(x.id) !== id);
+  else meals = meals.filter(x => Number(x.id) !== id);
+  write("workouts", workouts);
+  write("meals", meals);
+  renderAll();
+  showToast("Entry removed");
+});
+
+const activityOptions = {
+  "General fitness": [
+    ["Full-body movement", "Try comfortable bodyweight exercises."],
+    ["Easy walking", "Walk at a comfortable pace."],
+    ["Gentle stretching", "Focus on comfortable mobility."],
+    ["Fun movement", "Choose dancing, walking, or another activity."]
+  ],
+  "Build strength": [
+    ["Strength practice", "Try wall push-ups and comfortable squats."],
+    ["Recovery walk", "Walk gently or rest as needed."],
+    ["Full-body strength", "Practise controlled, comfortable movements."],
+    ["Mobility", "Try gentle stretching and movement."]
+  ],
+  "Improve endurance": [
+    ["Comfortable walk", "Begin at a pace where you can talk."],
+    ["Cardio practice", "Try walking or easy cycling."],
+    ["Recovery day", "Rest or do gentle stretching."],
+    ["Walking intervals", "Alternate comfortable and slightly brisk walking."]
+  ],
+  "Stay active": [
+    ["Daily movement", "Choose an activity you enjoy."],
+    ["Outdoor walk", "Take a comfortable walk."],
+    ["Stretch break", "Move gently and comfortably."],
+    ["Fun activity", "Try dancing or another enjoyable activity."]
+  ],
+  "Improve flexibility": [
+    ["Gentle stretching", "Move slowly without forcing a stretch."],
+    ["Mobility practice", "Try comfortable joint movements."],
+    ["Relaxation", "Choose gentle stretching or rest."],
+    ["Mindful movement", "Try beginner-friendly yoga movements."]
+  ]
+};
+const levelNotes = {
+  "Beginner":"Start gently and take breaks whenever needed.",
+  "Intermediate":"Choose a comfortable challenge and prioritise good technique.",
+  "Experienced":"Adapt the difficulty to your ability and allow recovery time."
+};
+function syncPlannerWithProfile() {
+  $("plannerGoal").value = activityOptions[profile.goal] ? profile.goal : "General fitness";
+  $("plannerLevel").value = levelNotes[profile.experience] ? profile.experience : "Beginner";
+}
+function generateWorkoutPlan() {
+const goal = $("plannerGoal").value;
+const level = $("plannerLevel").value;
+const days = Number($("plannerDays").value);
+const schedule = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const activities = {
+"General fitness": [
+["Full-body movement", "Try comfortable bodyweight exercises."],
+["Easy walking", "Walk at a comfortable pace."],
+["Gentle stretching", "Focus on comfortable mobility."],
+["Fun movement", "Choose dancing, walking, or another activity."]
+],
+"Build strength": [
+["Strength practice", "Try wall push-ups and comfortable squats."],
+["Recovery walk", "Walk gently or rest as needed."],
+["Full-body strength", "Practise controlled, comfortable movements."],
+["Mobility", "Try gentle stretching and movement."]
+],
+"Improve endurance": [
+["Comfortable walk", "Begin at a pace where you can talk."],
+["Cardio practice", "Try walking or easy cycling."],
+["Recovery day", "Rest or do gentle stretching."],
+["Walking intervals", "Alternate comfortable and slightly brisk walking."]
+],
+"Stay active": [
+["Daily movement", "Choose an activity you enjoy."],
+["Outdoor walk", "Take a comfortable walk."],
+["Stretch break", "Move gently and comfortably."],
+["Fun activity", "Try dancing or another enjoyable activity."]
+],
+"Improve flexibility": [
+["Gentle stretching", "Move slowly without forcing a stretch."],
+["Mobility practice", "Try comfortable joint movements."],
+["Relaxation", "Choose gentle stretching or rest."],
+["Mindful movement", "Try beginner-friendly yoga movements."]
+]
+};
+const tamilGoals = {
+"General fitness":"பொதுவான உடற்தகுதி",
+"Build strength":"வலிமையை அதிகரித்தல்",
+"Improve endurance":"சகிப்புத்தன்மையை மேம்படுத்துதல்",
+"Stay active":"சுறுசுறுப்பாக இருத்தல்",
+"Improve flexibility":"நெகிழ்வுத்தன்மையை மேம்படுத்துதல்"
+};
+const tamilLevels = {"Beginner":"தொடக்கநிலை","Intermediate":"இடைநிலை","Experienced":"அனுபவம் உள்ளவர்"};
+const tamilDays = {"Monday":"திங்கள்","Tuesday":"செவ்வாய்","Wednesday":"புதன்","Thursday":"வியாழன்","Friday":"வெள்ளி","Saturday":"சனி","Sunday":"ஞாயிறு"};
+const tamilActivities = {
+"Full-body movement":["முழு உடல் இயக்கம்","உங்களுக்கு ஏற்ற எளிய உடல் எடைப் பயிற்சிகளை முயற்சிக்கவும்."],
+"Easy walking":["எளிய நடைப்பயிற்சி","உங்களுக்கு வசதியான வேகத்தில் நடக்கவும்."],
+"Gentle stretching":["மென்மையான நீட்டிப்பு","உடலை மெதுவாகவும் வசதியாகவும் நீட்டிக்கவும்."],
+"Fun movement":["விருப்பமான இயக்கம்","நடனம், நடை அல்லது உங்களுக்கு விருப்பமான செயல்பாட்டைத் தேர்ந்தெடுக்கவும்."],
+"Strength practice":["வலிமைப் பயிற்சி","சுவரில் சாய்ந்து push-up செய்வது, வசதியான squat பயிற்சிகளை முயற்சிக்கவும்."],
+"Recovery walk":["ஓய்வுக்கான நடை","மெதுவாக நடக்கவும் அல்லது தேவையானால் ஓய்வெடுக்கவும்."],
+"Full-body strength":["முழு உடல் வலிமைப் பயிற்சி","கட்டுப்பாட்டுடனும் வசதியாகவும் உடற்பயிற்சி செய்யவும்."],
+"Mobility":["உடல் இயக்கப் பயிற்சி","மென்மையான நீட்டிப்பு மற்றும் இயக்கங்களை முயற்சிக்கவும்."],
+"Comfortable walk":["வசதியான நடை","பேசிக்கொண்டே நடக்க முடியும் அளவுக்கு மெதுவாகத் தொடங்கவும்."],
+"Cardio practice":["கார்டியோ பயிற்சி","நடைப்பயிற்சி அல்லது மெதுவான சைக்கிள் பயிற்சியை முயற்சிக்கவும்."],
+"Recovery day":["ஓய்வு நாள்","ஓய்வெடுக்கவும் அல்லது மென்மையான நீட்டிப்புகளைச் செய்யவும்."],
+"Walking intervals":["இடைவேளை நடைப்பயிற்சி","வசதியான நடை மற்றும் சற்றே வேகமான நடையை மாறி மாறிச் செய்யவும்."],
+"Daily movement":["தினசரி இயக்கம்","உங்களுக்கு பிடித்த செயல்பாட்டைத் தேர்ந்தெடுக்கவும்."],
+"Outdoor walk":["வெளிப்புற நடை","வசதியான நடைப்பயிற்சி செய்யவும்."],
+"Stretch break":["நீட்டிப்பு இடைவேளை","மெதுவாகவும் வசதியாகவும் உடலை நீட்டிக்கவும்."],
+"Relaxation":["ஓய்வெடுத்தல்","மென்மையான நீட்டிப்பு செய்யவும் அல்லது ஓய்வெடுக்கவும்."],
+"Mindful movement":["கவனத்துடன் உடல் இயக்கம்","தொடக்கநிலைக்கு ஏற்ற யோகா அசைவுகளை முயற்சிக்கவும்."]
+};
+const levelNotes = {
+Beginner: "Start gently and take breaks whenever needed.",
+Intermediate: "Choose a comfortable challenge and prioritise good technique.",
+Experienced: "Adapt the difficulty to your ability and allow recovery time."
+};
+const tamilLevelNotes = {
+Beginner:"மெதுவாகத் தொடங்கி, தேவையானபோது ஓய்வெடுக்கவும்.",
+Intermediate:"உங்களுக்கு ஏற்ற சவாலைத் தேர்ந்தெடுத்து, சரியான முறையில் பயிற்சி செய்யவும்.",
+Experienced:"உங்கள் திறனுக்கு ஏற்ப பயிற்சியின் கடினத்தன்மையை மாற்றி, ஓய்வுக்கும் நேரம் ஒதுக்கவும்."
+};
+const selectedActivities = activities[goal] || activities["General fitness"];
+const isTamil = currentLanguage === "ta";
+$("planTitle").textContent = isTamil ? (tamilGoals[goal] || goal) + " · வாரத் திட்டம்" : goal + " · Weekly Plan";
+$("planSubtitle").textContent = isTamil
+  ? (tamilLevelNotes[level] || tamilLevelNotes.Beginner) + " வாரத்தில் ஓய்வு நாட்களும் சேர்க்கப்பட்டுள்ளன."
+  : levelNotes[level] + " Rest days are included in your weekly schedule.";
+$("plannerResult").innerHTML = `
+  <h2 style="margin-top:24px">${isTamil ? "உங்களுக்கான வாராந்திர தொடக்கத் திட்டம் 💜" : "Your Personalised Starter Plan 💜"}</h2>
+  <p class="subtitle">${isTamil ? "இலக்கு: " + safe(tamilGoals[goal] || goal) + " · நிலை: " + safe(tamilLevels[level] || level) + " · வாரத்தில் " + days + " பயிற்சி நாட்கள்" : "Goal: " + safe(goal) + " · Level: " + safe(level) + " · " + days + " workout day(s) per week"}</p>
+  <div class="plan-grid" id="generatedPlanGrid"></div>
+`;
+$("generatedPlanGrid").innerHTML = schedule.map((day, index) => {
+  if (index >= days) {
+    return `<div class="plan-day"><span class="tag">${isTamil ? tamilDays[day] : day}</span><h3>${isTamil ? "ஓய்வு மற்றும் மீட்பு 🌿" : "Rest & Recovery 🌿"}</h3><p>${isTamil ? "உடல் ஓய்வெடுக்க நேரம் கொடுக்கவும். விருப்பமிருந்தால் மென்மையாகச் செயல்படலாம்." : "Take time to recover. Gentle movement is optional."}</p></div>`;
+  }
+  const activity = selectedActivities[index % selectedActivities.length];
+  const translated = tamilActivities[activity[0]] || [activity[0], activity[1]];
+  const title = isTamil ? translated[0] : activity[0];
+  const description = isTamil ? translated[1] : activity[1];
+  return `<div class="plan-day"><span class="tag">${isTamil ? tamilDays[day] : day}</span><h3>${safe(title)}</h3><p>${safe(description)}</p><p style="margin-top:8px"><strong>${isTamil ? "நிலை:" : "Level:"}</strong> ${safe(isTamil ? tamilLevels[level] : level)}</p></div>`;
+}).join("");
+}
+
+$("plannerForm").addEventListener("submit", e => {
+  e.preventDefault();
+  generateWorkoutPlan();
+  showToast("Your workout plan is ready! ✨");
+});
+renderProfile();
+renderAll();
+syncPlannerWithProfile();
+generateWorkoutPlan();
+</script>
+</body>
+</html>
