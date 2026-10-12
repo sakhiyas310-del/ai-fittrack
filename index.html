@@ -695,6 +695,55 @@ showProgress();
     <option value="Non-Veg">🍗 Non-Vegetarian</option>
     <option value="Both">🍽️ Both</option>
   </select>
+   
+<div id="automatic-meal-suggestions" style="margin-top:16px;padding:15px;border-radius:12px;background:#f3e8ff;color:#4c1d95;">
+  <h3>🍱 Your Daily Meal Suggestions</h3>
+  <p><strong>🌅 Breakfast:</strong> <span id="auto-breakfast"></span></p>
+  <p><strong>☀️ Lunch:</strong> <span id="auto-lunch"></span></p>
+  <p><strong>🌙 Dinner:</strong> <span id="auto-dinner"></span></p>
+</div>
+
+<script>
+function updateAutomaticMeals() {
+  const type = document.getElementById('foodType').value;
+
+  const veg = {
+    breakfast: ['Idli with sambar', 'Vegetable dosa', 'Oats with fruit'],
+    lunch: ['Rice with sambar and vegetables', 'Chapati with dal', 'Curd rice with vegetables'],
+    dinner: ['Vegetable dosa', 'Chapati with vegetable kurma', 'Paneer wrap']
+  };
+
+  const nonVeg = {
+    breakfast: ['Egg dosa', 'Boiled eggs with toast', 'Vegetable omelette'],
+    lunch: ['Chicken with rice and vegetables', 'Egg rice with vegetables', 'Fish with rice'],
+    dinner: ['Egg dosa', 'Grilled chicken wrap', 'Chicken soup with toast']
+  };
+
+  function chooseMeal(meals, index) {
+    return meals[index % meals.length];
+  }
+
+  const day = new Date().getDate();
+  const breakfasts = type === 'Veg' ? veg.breakfast :
+    type === 'Non-Veg' ? nonVeg.breakfast :
+    [...veg.breakfast, ...nonVeg.breakfast];
+
+  const lunches = type === 'Veg' ? veg.lunch :
+    type === 'Non-Veg' ? nonVeg.lunch :
+    [...veg.lunch, ...nonVeg.lunch];
+
+  const dinners = type === 'Veg' ? veg.dinner :
+    type === 'Non-Veg' ? nonVeg.dinner :
+    [...veg.dinner, ...nonVeg.dinner];
+
+  document.getElementById('auto-breakfast').textContent = chooseMeal(breakfasts, day);
+  document.getElementById('auto-lunch').textContent = chooseMeal(lunches, day + 1);
+  document.getElementById('auto-dinner').textContent = chooseMeal(dinners, day + 2);
+}
+
+document.getElementById('foodType').addEventListener('change', updateAutomaticMeals);
+updateAutomaticMeals();
+</script>
 
   <h3>🍱 Meals for <span id="today-date"></span></h3>
 
