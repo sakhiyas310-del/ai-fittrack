@@ -25,9 +25,41 @@
 @media(max-width:760px){.app{display:block}.sidebar{width:100%;min-height:0;padding:15px;position:static;border-right:0;border-bottom:1px solid var(--border)}.brand{padding:0 5px 15px}.menu-label,.sidebar-bottom{display:none}.nav-list{display:flex;overflow-x:auto;gap:5px}.nav-btn{width:auto;white-space:nowrap;margin:0;padding:10px}.nav-btn .ico{width:auto}.main{padding:22px 15px}.hero{padding:24px 21px;min-height:170px}.hero-art{max-width:190px;padding:0}.hero-art img{max-width:180px}.hero h1{font-size:25px}.content-grid{grid-template-columns:1fr}.quick-grid{grid-template-columns:1fr}.quick-card p{min-height:0}.plan-grid{grid-template-columns:1fr}.topbar{margin-bottom:20px}.date-chip{display:none}}
 @media(max-width:420px){.stats{grid-template-columns:1fr 1fr;gap:9px}.card{padding:14px}.stat-number{font-size:23px}.form-grid{grid-template-columns:1fr}.hero-art{display:none}h1{font-size:25px}}
 
-.wellness-grid > section, .wellness-grid > div { min-width:0; max-width:100%; }
-.wellness-grid input, .wellness-grid select, .wellness-grid textarea { max-width:100%; }
-#fit-coach { width:100%; max-width:none; box-sizing:border-box; }
+.wellness-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  align-items: start;
+  width: 100%;
+}
+
+.wellness-grid > section,
+.wellness-grid > div {
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.wellness-grid input,
+.wellness-grid select,
+.wellness-grid textarea {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+#fit-coach {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 760px) {
+  .wellness-grid {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
 </head>
 <body>
