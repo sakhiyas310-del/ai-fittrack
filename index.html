@@ -34,6 +34,7 @@
   <nav class="nav-list">
     <button class="nav-btn active" data-panel="dashboard"><span class="ico">⌂</span>Dashboard</button>
     <button class="nav-btn" data-panel="profile"><span class="ico">♙</span>My Profile</button>
+    <button class="nav-btn" data-panel="wellness"><span class="ico">💜</span>Wellness Hub</button>
     <button class="nav-btn" data-panel="workouts"><span class="ico">♧</span>Workouts</button>
     <button class="nav-btn" data-panel="food"><span class="ico">♡</span>Food Tracker</button>
     <button class="nav-btn" data-panel="progress"><span class="ico">▥</span>My Progress</button>
@@ -150,7 +151,7 @@
   </div>
 </section>
 <footer>Made with 💜 for your wellness journey · AI FitTrack</footer>
-<section class="panel" id="history">
+<section class="panel" id="history" style="display:none;">
   <div class="section-heading">
     <h2>📅 Workout History</h2>
     <p>Your past workouts in one place 💜</p>
@@ -162,33 +163,23 @@
 </section>
 
 <script>
- <script>
 function renderWorkoutHistory() {
   const container = document.getElementById('workout-history-list');
   if (!container) return;
-
   let history = [];
-
   try {
-    history = JSON.parse(
-      localStorage.getItem('fittrack_workouts') || '[]'
-    );
-  } catch (e) {
-    history = [];
-  }
+    history = JSON.parse(localStorage.getItem('fittrack_workout_history') || '[]');
+  } catch (e) {}
 
   if (!history.length) {
-    container.innerHTML =
-      '<p>No workouts recorded yet. Complete a workout to start your history!</p>';
+    container.innerHTML = '<p>No workouts recorded yet. Complete a workout to start your history!</p>';
     return;
   }
 
   container.innerHTML = history.map(item =>
     '<div style="padding:12px;margin:10px 0;border-radius:12px;background:#f3e8ff;">' +
     '<strong>' + escapeHistoryText(item.name) + '</strong><br>' +
-    '📅 ' + escapeHistoryText(item.date) +
-    ' · ⏱️ ' + escapeHistoryText(item.minutes) + ' minutes' +
-    ' · 💪 ' + escapeHistoryText(item.type) +
+    '📅 ' + escapeHistoryText(item.date) + ' · ⏱️ ' + escapeHistoryText(item.duration || 'Not set') +
     '</div>'
   ).join('');
 }
@@ -201,19 +192,25 @@ function escapeHistoryText(value) {
 
 function clearWorkoutHistory() {
   if (!confirm('Clear all saved workout history?')) return;
-
-  localStorage.removeItem('fittrack_workouts');
-
-  if (typeof workouts !== 'undefined') {
-    workouts = [];
-    renderAll();
-  }
-
+  localStorage.removeItem('fittrack_workout_history');
   renderWorkoutHistory();
 }
 
 document.addEventListener('DOMContentLoaded', renderWorkoutHistory);
 </script>
+
+<section class="panel" id="wellness">
+  <h1>Wellness Hub 💜</h1><p class="subtitle">Water, daily habits, meal ideas and your personal wellness coach — all in one place.</p>
+  <div class="stats">
+    <div class="card"><h2>💧 Water Tracker</h2><p>Daily goal: 8 glasses</p><h3><span id="hubWaterCount">0</span> / 8 glasses</h3><progress id="hubWaterProgress" value="0" max="8" style="width:100%"></progress><button class="btn btn-primary" type="button" onclick="hubAddWater(1)">+ Add a glass</button> <button class="btn btn-light" type="button" onclick="hubResetWater()">Reset</button></div>
+    <div class="card"><h2>🔥 Daily Streak</h2><p>Check in once a day to build your habit.</p><h3><span id="hubStreakCount">0</span> day streak</h3><button class="btn btn-primary" type="button" onclick="hubCheckIn()">Complete today's check-in</button><p id="hubCheckinMessage" aria-live="polite"></p></div>
+    <div class="card"><h2>📊 Weekly Progress</h2><p>Days checked in this week</p><h3><span id="hubWeekCount">0</span> / 7 days</h3><progress id="hubWeekProgress" value="0" max="7" style="width:100%"></progress></div>
+  </div>
+  <div class="card form-card" style="margin-top:20px"><h2>🥗 Food Preference & Daily Meal Suggestions</h2><div class="field"><label for="hubFoodType">Choose your food preference</label><select id="hubFoodType"><option value="Veg">🥦 Vegetarian</option><option value="Non-Veg">🍗 Non-vegetarian</option><option value="Both">🍽️ Both</option></select></div><div class="notice" style="margin-top:12px"><h3>🍱 Today's meal ideas</h3><p>🌅 Breakfast: <strong id="hubBreakfast">Idli with sambar</strong></p><p>☀️ Lunch: <strong id="hubLunch">Rice with dal and vegetables</strong></p><p>🌙 Dinner: <strong id="hubDinner">Chapati with vegetables</strong></p></div></div>
+  <div class="card form-card" style="margin-top:20px"><h2>📝 My Food Plan</h2><p class="subtitle">Save your meal notes in this browser.</p><form id="hubFoodPlanForm"><div class="field"><label for="hubPlanBreakfast">Breakfast</label><input id="hubPlanBreakfast" placeholder="e.g. Idli, dosa, oats"></div><div class="field"><label for="hubPlanLunch">Lunch</label><input id="hubPlanLunch" placeholder="e.g. Rice, vegetables, dal"></div><div class="field"><label for="hubPlanDinner">Dinner</label><input id="hubPlanDinner" placeholder="e.g. Chapati and paneer"></div><button class="btn btn-primary" type="submit">Save Food Plan 💜</button><p id="hubFoodSaved" aria-live="polite"></p></form></div>
+  <div class="card form-card" style="margin-top:20px"><h2>🤖 FitTrack Smart Coach</h2><p class="subtitle">Ask for simple workout, food, hydration or rest ideas.</p><div class="field"><label for="hubCoachGoal">Your goal</label><select id="hubCoachGoal"><option value="general">Stay healthy</option><option value="weight loss">Weight management</option><option value="muscle gain">Build strength</option><option value="beginner">Beginner workout</option></select></div><div class="field"><label for="hubCoachPreference">Food preference</label><select id="hubCoachPreference"><option value="Veg">Vegetarian</option><option value="Non-Veg">Non-vegetarian</option><option value="Both">Both</option></select></div><div class="field"><label for="hubCoachQuestion">Your question</label><textarea id="hubCoachQuestion" rows="3" placeholder="e.g. Suggest a beginner workout and vegetarian dinner"></textarea></div><button class="btn btn-primary" type="button" onclick="hubAskCoach()">💬 Ask My Coach</button><div id="hubCoachResponse" class="notice" aria-live="polite" style="white-space:pre-line;margin-top:14px">Your suggestions will appear here.</div><p class="subtitle">This is an offline rule-based helper, not a live AI or medical professional.</p></div>
+</section>
+
 </main>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -1044,5 +1041,32 @@ function askFitCoach() {
   response.textContent = result;
 }
 </script>
+
+<script>
+(function(){
+ const today=()=>new Date().toLocaleDateString('en-CA');
+ const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key)) ?? fallback}catch{return fallback}};
+ function refresh(){
+  const d=today(); let w=read('fittrack_water',{}); if(w.date!==d) w={date:d,count:0};
+  document.getElementById('hubWaterCount').textContent=w.count||0; document.getElementById('hubWaterProgress').value=w.count||0;
+  const checks=read('fittrack_checkins',{}); const dates=Object.keys(checks).filter(x=>checks[x]);
+  let streak=0, cursor=new Date(); while(checks[cursor.toLocaleDateString('en-CA')]){streak++;cursor.setDate(cursor.getDate()-1)}
+  const weekStart=new Date(); weekStart.setHours(0,0,0,0); weekStart.setDate(weekStart.getDate()-((weekStart.getDay()+6)%7));
+  const weekDates=dates.filter(x=>{const dt=new Date(x+'T00:00:00');return dt>=weekStart&&dt<=new Date(d+'T23:59:59')});
+  document.getElementById('hubStreakCount').textContent=streak;document.getElementById('hubWeekCount').textContent=weekDates.length;document.getElementById('hubWeekProgress').value=weekDates.length;
+ }
+ window.hubAddWater=function(n){let d=today(),w=read('fittrack_water',{});if(w.date!==d)w={date:d,count:0};w.count=Math.max(0,Math.min(8,(w.count||0)+n));localStorage.setItem('fittrack_water',JSON.stringify(w));refresh()};
+ window.hubResetWater=function(){localStorage.setItem('fittrack_water',JSON.stringify({date:today(),count:0}));refresh()};
+ window.hubCheckIn=function(){let d=today(),checks=read('fittrack_checkins',{});if(checks[d]){document.getElementById('hubCheckinMessage').textContent='You have already checked in today 💜';return}checks[d]=true;localStorage.setItem('fittrack_checkins',JSON.stringify(checks));document.getElementById('hubCheckinMessage').textContent='Nice work — today is checked in! ✨';refresh()};
+ const meals={Veg:{b:['Idli with sambar','Vegetable dosa','Oats with fruit'],l:['Rice with sambar and vegetables','Chapati with dal','Curd rice with vegetables'],d:['Vegetable dosa','Chapati with vegetable kurma','Paneer wrap']},'Non-Veg':{b:['Egg dosa','Boiled eggs with toast','Vegetable omelette'],l:['Chicken with rice and vegetables','Egg rice with vegetables','Fish with rice'],d:['Egg dosa','Grilled chicken wrap','Chicken soup with toast']},Both:{b:['Idli with sambar','Egg dosa','Oats with fruit'],l:['Rice with dal and vegetables','Chicken with rice','Chapati with paneer'],d:['Vegetable dosa','Grilled chicken wrap','Paneer wrap']}};
+ function mealSuggestions(){let m=meals[document.getElementById('hubFoodType').value]||meals.Veg;let i=new Date().getDate()%3;document.getElementById('hubBreakfast').textContent=m.b[i];document.getElementById('hubLunch').textContent=m.l[(i+1)%3];document.getElementById('hubDinner').textContent=m.d[(i+2)%3];localStorage.setItem('fittrack_food_preference',document.getElementById('hubFoodType').value)}
+ document.getElementById('hubFoodType').value=localStorage.getItem('fittrack_food_preference')||'Veg';document.getElementById('hubFoodType').addEventListener('change',mealSuggestions);mealSuggestions();
+ const saved=read('aiFitFoodPlan',{});['Breakfast','Lunch','Dinner'].forEach(k=>{const el=document.getElementById('hubPlan'+k);if(el)el.value=saved[k.toLowerCase()]||''});
+ document.getElementById('hubFoodPlanForm').addEventListener('submit',e=>{e.preventDefault();localStorage.setItem('aiFitFoodPlan',JSON.stringify({breakfast:document.getElementById('hubPlanBreakfast').value,lunch:document.getElementById('hubPlanLunch').value,dinner:document.getElementById('hubPlanDinner').value}));document.getElementById('hubFoodSaved').textContent='Food plan saved on this device 💜'});
+ window.hubAskCoach=function(){const q=document.getElementById('hubCoachQuestion').value.trim().toLowerCase(),goal=document.getElementById('hubCoachGoal').value,pref=document.getElementById('hubCoachPreference').value;let out=[];if(!q){document.getElementById('hubCoachResponse').textContent='💜 Type your question first!';return}if(/workout|exercise|gym|fitness/.test(q)||goal==='beginner'){out.push('🏃 WORKOUT\n• Warm up with easy walking for 5 minutes.\n• Try comfortable chair squats, wall push-ups and marching.\n• Cool down gently and rest when needed.')}if(/food|meal|breakfast|lunch|dinner|eat|diet/.test(q)||goal==='weight loss'||goal==='muscle gain'){let f=pref==='Veg'?['Idli with sambar','Dal with rice and vegetables','Paneer or chickpea wrap']:pref==='Non-Veg'?['Egg dosa','Chicken with rice and vegetables','Egg sandwich']:['Idli with sambar','Egg dosa','Dal with rice and vegetables','Chicken with rice'];out.push('🥗 FOOD IDEAS\n• '+f.join('\n• '))}if(/water|hydration/.test(q))out.push('💧 Drink water regularly; needs vary with activity, heat and health.');if(/sleep|rest|recovery|tired/.test(q))out.push('🌙 Keep a regular sleep schedule and allow recovery days.');if(!out.length)out.push('🌟 Choose balanced meals, comfortable movement, hydration and enough rest. Small steps count!');if(goal==='weight loss')out.push('🎯 Focus on sustainable habits and balanced meals, not crash diets.');if(goal==='muscle gain')out.push('🎯 Pair suitable strength training with enough food, protein and recovery.');out.push('ℹ️ General suggestions only, not medical advice.');document.getElementById('hubCoachResponse').textContent=out.join('\n\n')};
+ refresh();
+})();
+</script>
+
 </body>
 </html>
