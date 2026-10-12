@@ -832,24 +832,7 @@ function saveFoodPlan() {
 </script>
  
  
-<!-- AI Food Planner -->
-<section id="ai-food-planner" style="margin:24px 0;padding:20px;border-radius:18px;background:#f3e8ff;color:#2e1065;">
-  <h2>🤖 AI Food Planner</h2>
-  <p>Tell me what food you want, your goal, or ingredients you have!</p>
 
-  <label for="ai-food-type">Food Preference</label>
-  <select id="ai-food-type" style="display:block;width:100%;padding:10px;margin:8px 0;">
-    <option value="Both">Veg & Non-Veg</option>
-    <option value="Veg">Vegetarian</option>
-    <option value="Non-Veg">Non-Vegetarian</option>
-  </select>
-
-  <textarea id="ai-food-request" rows="3" placeholder="Example: Weight loss-ku veg dinner sollu. Enkitta paneer irukku." style="box-sizing:border-box;width:100%;padding:12px;border-radius:10px;"></textarea>
-
-  <button type="button" onclick="suggestAIFood()" style="margin-top:10px;padding:12px 18px;border:0;border-radius:10px;background:#7c3aed;color:white;font-weight:bold;">✨ Suggest Food</button>
-
-  <div id="ai-food-answer" aria-live="polite" style="margin-top:16px;line-height:1.7;white-space:pre-line;"></div>
-</section>
 
 <script>
 function suggestAIFood() {
