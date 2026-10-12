@@ -835,5 +835,97 @@ function suggestAIFood() {
     '\n\nNote: These are smart suggestions, not a live AI response. Tell me more ingredients or your meal preference for different ideas.';
 }
 </script>
+ 
+<!-- All-in-One Food + Fitness Coach -->
+<section id="fit-coach" style="margin:24px 0;padding:20px;border-radius:18px;background:#ede9fe;color:#2e1065;">
+  <h2>💜 FitTrack Smart Coach</h2>
+  <p>Tell me your fitness goal, food preference, or workout question!</p>
+
+  <label for="coach-goal">Your Goal</label>
+  <select id="coach-goal" style="display:block;width:100%;padding:10px;margin:8px 0;">
+    <option value="general">Stay healthy</option>
+    <option value="weight loss">Weight loss</option>
+    <option value="muscle gain">Muscle gain</option>
+    <option value="fitness">Improve fitness</option>
+    <option value="beginner">Beginner workout</option>
+  </select>
+
+  <label for="coach-preference">Food Preference</label>
+  <select id="coach-preference" style="display:block;width:100%;padding:10px;margin:8px 0;">
+    <option value="Veg">Vegetarian</option>
+    <option value="Non-Veg">Non-Vegetarian</option>
+    <option value="Both">Both</option>
+  </select>
+
+  <textarea id="coach-question" rows="3" placeholder="Example: Suggest a simple workout and healthy dinner..." style="box-sizing:border-box;width:100%;padding:12px;border-radius:10px;"></textarea>
+
+  <button type="button" onclick="askFitCoach()" style="margin-top:10px;padding:12px 18px;border:0;border-radius:10px;background:#7c3aed;color:white;font-weight:bold;">💬 Ask My Coach</button>
+
+  <div id="coach-response" aria-live="polite" style="margin-top:16px;line-height:1.7;white-space:pre-line;"></div>
+</section>
+
+<script>
+function askFitCoach() {
+  const goal = document.getElementById('coach-goal').value;
+  const preference = document.getElementById('coach-preference').value;
+  const question = document.getElementById('coach-question').value.trim().toLowerCase();
+  const response = document.getElementById('coach-response');
+
+  if (!question) {
+    response.textContent = '💜 Type your goal or question first!';
+    return;
+  }
+
+  let result = '💜 YOUR PERSONAL FITTRACK PLAN\n\n';
+
+  if (/workout|exercise|gym|fitness|beginner|exercise plan/.test(question) || goal === 'beginner' || goal === 'fitness') {
+    result += '🏋️ WORKOUT\n';
+    result += '• Warm up with easy walking or marching for 5 minutes.\n';
+    result += '• Try 8–10 chair squats, wall push-ups and gentle marching.\n';
+    result += '• Cool down with gentle stretches.\n';
+    result += '• Start at a comfortable level and rest when needed.\n\n';
+  }
+
+  if (/food|meal|breakfast|lunch|dinner|eat|recipe|ingredient|diet/.test(question) || goal === 'weight loss' || goal === 'muscle gain') {
+    result += '🥗 FOOD IDEAS\n';
+
+    if (preference === 'Veg' || preference === 'Both') {
+      result += '• Idli with sambar\n• Dal with rice and vegetables\n• Paneer or chickpea wrap\n• Oats with fruit\n';
+    }
+
+    if (preference === 'Non-Veg' || preference === 'Both') {
+      result += '• Egg dosa\n• Chicken with rice and vegetables\n• Egg sandwich\n';
+    }
+
+    result += '\n';
+  }
+
+  if (/water|hydration/.test(question)) {
+    result += '💧 WATER\nDrink water regularly throughout the day. Needs vary with activity, heat and health.\n\n';
+  }
+
+  if (/sleep|rest|recovery|tired/.test(question)) {
+    result += '😴 REST & RECOVERY\n• Aim for a regular sleep schedule.\n• Include recovery days and avoid pushing through pain.\n\n';
+  }
+
+  if (/motivation|lazy|motivate/.test(question)) {
+    result += '🌟 DAILY MOTIVATION\nSmall steps count! Choose one achievable healthy habit today and build consistency.\n\n';
+  }
+
+  if (result === '💜 YOUR PERSONAL FITTRACK PLAN\n\n') {
+    result += '🌟 GENERAL ADVICE\n• Eat balanced meals with vegetables, protein and suitable portions.\n• Stay active at a comfortable level.\n• Sleep well and drink water regularly.\n• Ask about workouts, food, hydration or recovery for more specific suggestions.\n\n';
+  }
+
+  if (goal === 'weight loss') {
+    result += '🎯 GOAL TIP\nFocus on sustainable habits and balanced meals, not crash diets.\n\n';
+  } else if (goal === 'muscle gain') {
+    result += '🎯 GOAL TIP\nCombine appropriate strength training, enough food and protein, and recovery.\n\n';
+  }
+
+  result += 'ℹ️ This is an offline rule-based coach, not a live AI or medical professional. Adapt exercises to your ability and seek professional advice for health concerns.';
+
+  response.textContent = result;
+}
+</script>
 </body>
 </html>
