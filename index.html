@@ -218,69 +218,41 @@ showProgress();
 <div id="automatic-meal-suggestions" style="margin-top:16px;padding:15px;border-radius:12px;background:#f3e8ff;color:#4c1d95;">
 <h3>🍱 Your Daily Meal Suggestions</h3>
 <p><strong>🌅 Breakfast:</strong> <span id="auto-breakfast"></span></p>
+<p><strong>🍎 Morning Snacks:</strong> <span id="auto-morning-snacks"></span></p>
 <p><strong>☀️ Lunch:</strong> <span id="auto-lunch"></span></p>
+<p><strong>🥜 Evening Snacks:</strong> <span id="auto-evening-snacks"></span></p>
 <p><strong>🌙 Dinner:</strong> <span id="auto-dinner"></span></p>
 </div>
 <script>
 function updateAutomaticMeals() {
   const type = document.getElementById('foodType').value;
-
   const veg = {
     breakfast: ['Idli with sambar', 'Vegetable dosa', 'Oats with fruit'],
+    morning: ['Banana and almonds', 'Seasonal fruit', 'Roasted chana'],
     lunch: ['Rice with sambar and vegetables', 'Chapati with dal', 'Curd rice with vegetables'],
+    evening: ['Sundal', 'Fruit bowl', 'Buttermilk with roasted chana'],
     dinner: ['Vegetable dosa', 'Chapati with vegetable kurma', 'Paneer wrap']
   };
-
   const nonVeg = {
     breakfast: ['Egg dosa', 'Boiled eggs with toast', 'Vegetable omelette'],
+    morning: ['Boiled egg', 'Fruit and yogurt', 'Roasted chana'],
     lunch: ['Chicken with rice and vegetables', 'Egg rice with vegetables', 'Fish with rice'],
+    evening: ['Boiled egg and fruit', 'Yogurt', 'Chicken sandwich'],
     dinner: ['Egg dosa', 'Grilled chicken wrap', 'Chicken soup with toast']
   };
-
-  function chooseMeal(meals, index) {
-    return meals[index % meals.length];
+  function chooseMeal(v, n, offset) {
+    const choices = type === 'Veg' ? v : type === 'Non-Veg' ? n : [...v, ...n];
+    return choices[(new Date().getDate() + offset) % choices.length];
   }
-
-  const day = new Date().getDate();
-  const breakfasts = type === 'Veg' ? veg.breakfast :
-    type === 'Non-Veg' ? nonVeg.breakfast :
-    [...veg.breakfast, ...nonVeg.breakfast];
-
-  const lunches = type === 'Veg' ? veg.lunch :
-    type === 'Non-Veg' ? nonVeg.lunch :
-    [...veg.lunch, ...nonVeg.lunch];
-
-  const dinners = type === 'Veg' ? veg.dinner :
-    type === 'Non-Veg' ? nonVeg.dinner :
-    [...veg.dinner, ...nonVeg.dinner];
-
-  document.getElementById('auto-breakfast').textContent = chooseMeal(breakfasts, day);
-document.getElementById('auto-lunch').textContent = chooseMeal(lunches, day + 1);
-document.getElementById('auto-dinner').textContent = chooseMeal(dinners, day + 2);
+  document.getElementById('auto-breakfast').textContent = chooseMeal(veg.breakfast, nonVeg.breakfast, 0);
+  document.getElementById('auto-morning-snacks').textContent = chooseMeal(veg.morning, nonVeg.morning, 1);
+  document.getElementById('auto-lunch').textContent = chooseMeal(veg.lunch, nonVeg.lunch, 2);
+  document.getElementById('auto-evening-snacks').textContent = chooseMeal(veg.evening, nonVeg.evening, 3);
+  document.getElementById('auto-dinner').textContent = chooseMeal(veg.dinner, nonVeg.dinner, 4);
 }
-
 document.getElementById('foodType').addEventListener('change', updateAutomaticMeals);
 updateAutomaticMeals();
 </script>
-<h3>🍱 Meals for <span id="today-date"></span></h3>
-<script>
-document.getElementById('today-date').textContent =
-  new Date().toLocaleDateString('en-IN', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  });
-</script>
-<div id="meal-suggestions-inline" style="margin:12px 0;padding:14px;border-radius:12px;background:#f3e8ff;color:#4c1d95;">
-<p>🌅 <strong>Suggested Breakfast:</strong> <span id="suggested-breakfast">Idli with sambar</span></p>
-<p>☀️ <strong>Suggested Lunch:</strong> <span id="suggested-lunch">Rice with dal and vegetables</span></p>
-<p>🌙 <strong>Suggested Dinner:</strong> <span id="suggested-dinner">Chapati with paneer</span></p>
-</div>
-<div class="food-meal-fields">
-  <div><label for="breakfast">Breakfast</label><input id="breakfast" placeholder="e.g. Idli, dosa, eggs"/></div>
-  <div><label for="lunch">Lunch</label><input id="lunch" placeholder="e.g. Rice, vegetables, chicken"/></div>
-  <div><label for="dinner">Dinner</label><input id="dinner" placeholder="e.g. Chapati, paneer"/></div>
-</div>
 <button onclick="saveFoodPlan()">Save Food Plan 💜</button>
 <p id="foodSaved"></p>
 </section>
@@ -340,26 +312,24 @@ document.getElementById('today-date').textContent =
 function saveFoodPlan() {
   const plan = {
     type: document.getElementById('foodType').value,
-    breakfast: document.getElementById('breakfast').value,
-    lunch: document.getElementById('lunch').value,
-    dinner: document.getElementById('dinner').value
+    breakfast: document.getElementById('auto-breakfast').textContent,
+    morningSnacks: document.getElementById('auto-morning-snacks').textContent,
+    lunch: document.getElementById('auto-lunch').textContent,
+    eveningSnacks: document.getElementById('auto-evening-snacks').textContent,
+    dinner: document.getElementById('auto-dinner').textContent
   };
-
   localStorage.setItem('aiFitFoodPlan', JSON.stringify(plan));
-  document.getElementById('foodSaved').textContent =
-    '💜 Food plan saved successfully!';
+  document.getElementById('foodSaved').textContent = '💜 Your five-meal food plan has been saved!';
 }
-
 (function loadFoodPlan() {
-  const plan = JSON.parse(
-    localStorage.getItem('aiFitFoodPlan') || '{}'
-  );
-  if (plan.type) document.getElementById('foodType').value = plan.type;
-  ['breakfast', 'lunch', 'dinner'].forEach(meal => {
-    if (plan[meal]) document.getElementById(meal).value = plan[meal];
-  });
-})();
-</script>
+  try {
+    const plan = JSON.parse(localStorage.getItem('aiFitFoodPlan') || '{}');
+    if (plan.type) document.getElementById('foodType').value = plan.type;
+  } catch (e) {
+    console.warn('Could not load saved food plan.', e);
+  }
+  updateAutomaticMeals();
+})();</script>
 <script>
 function suggestAIFood() {
   const request = document.getElementById('ai-food-request').value.trim().toLowerCase();
