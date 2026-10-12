@@ -276,22 +276,38 @@ document.getElementById('today-date').textContent =
 <p>☀️ <strong>Suggested Lunch:</strong> <span id="suggested-lunch">Rice with dal and vegetables</span></p>
 <p>🌙 <strong>Suggested Dinner:</strong> <span id="suggested-dinner">Chapati with paneer</span></p>
 </div>
-<label for="breakfast">Breakfast</label>
-<input id="breakfast" placeholder="e.g. Idli, dosa, eggs"/>
-<label for="lunch">Lunch</label>
-<input id="lunch" placeholder="e.g. Rice, vegetables, chicken"/>
-<label for="dinner">Dinner</label>
-<input id="dinner" placeholder="e.g. Chapati, paneer"/>
+<div class="food-meal-fields">
+  <div><label for="breakfast">Breakfast</label><input id="breakfast" placeholder="e.g. Idli, dosa, eggs"/></div>
+  <div><label for="lunch">Lunch</label><input id="lunch" placeholder="e.g. Rice, vegetables, chicken"/></div>
+  <div><label for="dinner">Dinner</label><input id="dinner" placeholder="e.g. Chapati, paneer"/></div>
+</div>
 <button onclick="saveFoodPlan()">Save Food Plan 💜</button>
 <p id="foodSaved"></p>
 </section>
 <style>
 #food-preference {
+  grid-column: 1 / -1;
   background: linear-gradient(135deg, #f3e8ff, #fce7f3);
   color: #4c1d95;
   border-radius: 18px;
-  padding: 20px;
-  margin: 16px 0;
+  padding: 22px;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+#food-preference .food-meal-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  align-items: end;
+}
+#food-preference .food-meal-fields label {
+  margin-bottom: 4px;
+}
+#food-preference #automatic-meal-suggestions,
+#food-preference #meal-suggestions-inline {
+  width: 100%;
+  box-sizing: border-box;
 }
 #food-preference label,
 #food-preference input,
@@ -314,6 +330,10 @@ document.getElementById('today-date').textContent =
   border-radius: 10px;
   padding: 12px;
   margin-top: 10px;
+}
+@media (max-width: 760px) {
+  #food-preference { grid-column: 1; padding: 16px; }
+  #food-preference .food-meal-fields { grid-template-columns: 1fr; gap: 8px; }
 }
 </style>
 <script>
