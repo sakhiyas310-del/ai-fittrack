@@ -208,20 +208,20 @@ showProgress();
 </script>
 <!-- Food Preference -->
 <section class="card" id="food-preference">
-<h2>🥗 Food Preference</h2>
-<label for="foodType">Choose your food type:</label>
+<h2>🥗 Food Preference / உணவு விருப்பம்</h2>
+<label for="foodType">Choose your food type / உணவு வகையைத் தேர்வு செய்க:</label>
 <select id="foodType">
 <option value="Veg">🥦 Vegetarian</option>
 <option value="Non-Veg">🍗 Non-Vegetarian</option>
 <option value="Both">🍽️ Both</option>
 </select>
 <div id="automatic-meal-suggestions" style="margin-top:16px;padding:15px;border-radius:12px;background:#f3e8ff;color:#4c1d95;">
-<h3>🍱 Your Daily Meal Suggestions</h3>
-<p><strong>🌅 Breakfast:</strong> <span id="auto-breakfast"></span></p>
-<p><strong>🍎 Morning Snacks:</strong> <span id="auto-morning-snacks"></span></p>
-<p><strong>☀️ Lunch:</strong> <span id="auto-lunch"></span></p>
-<p><strong>🥜 Evening Snacks:</strong> <span id="auto-evening-snacks"></span></p>
-<p><strong>🌙 Dinner:</strong> <span id="auto-dinner"></span></p>
+<h3>🍱 Your Daily Meal Suggestions / தினசரி உணவு பரிந்துரைகள்</h3>
+<p><strong>🌅 Breakfast / காலை உணவு:</strong> <span id="auto-breakfast"></span></p>
+<p><strong>🍎 Morning Snacks / காலை சிற்றுண்டி:</strong> <span id="auto-morning-snacks"></span></p>
+<p><strong>☀️ Lunch / மதிய உணவு:</strong> <span id="auto-lunch"></span></p>
+<p><strong>🥜 Evening Snacks / மாலை சிற்றுண்டி:</strong> <span id="auto-evening-snacks"></span></p>
+<p><strong>🌙 Dinner / இரவு உணவு:</strong> <span id="auto-dinner"></span></p>
 </div>
 <script>
 function updateAutomaticMeals() {
@@ -419,7 +419,7 @@ function suggestAIFood() {
 <!-- All-in-One Food + Fitness Coach -->
 <section id="fit-coach" style="grid-column:1 / -1;width:100%;max-width:none;box-sizing:border-box;margin:0;padding:20px;border-radius:18px;background:#ede9fe;color:#2e1065;">
 <h2>💜 FitTrack Smart Coach</h2>
-<p>Tell me your fitness goal, food preference, or workout question!</p>
+<p>Tell me your fitness goal, food preference, or workout question! / உங்கள் உடற்பயிற்சி இலக்கு, உணவு விருப்பம் அல்லது கேள்வியைச் சொல்லுங்கள்!</p>
 <div style="display:flex;flex-wrap:wrap;align-items:center;gap:18px;margin:18px 0;padding:16px;border-radius:16px;background:linear-gradient(135deg,#f5eaff,#e9ddff);">
 <div style="flex:1;min-width:180px;text-align:center;">
 <img alt="Fitness coach training" src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&amp;fit=crop&amp;w=500&amp;q=80" style="width:100%;max-width:260px;height:250px;object-fit:cover;border-radius:16px;"/>
@@ -448,73 +448,87 @@ function suggestAIFood() {
 <option value="Non-Veg">Non-Vegetarian</option>
 <option value="Both">Both</option>
 </select>
-<textarea id="coach-question" placeholder="Example: Suggest a simple workout and healthy dinner..." rows="3" style="box-sizing:border-box;width:100%;padding:12px;border-radius:10px;"></textarea>
-<button onclick="askFitCoach()" style="margin-top:10px;padding:12px 18px;border:0;border-radius:10px;background:#7c3aed;color:white;font-weight:bold;" type="button">💬 Ask My Coach</button>
+<label for="coach-language" style="display:block;margin:10px 0 6px;font-weight:600;">Response language / பதில் மொழி</label>
+<select id="coach-language" style="display:block;width:100%;padding:10px;margin:8px 0;border-radius:10px;">
+  <option value="both">Tamil + English / தமிழ் + ஆங்கிலம்</option>
+  <option value="ta">Tamil only / தமிழ் மட்டும்</option>
+  <option value="en">English only / ஆங்கிலம் மட்டும்</option>
+</select>
+<textarea id="coach-question" placeholder="Ask in Tamil, Tanglish or English / தமிழ், தங்கிலீஷ் அல்லது ஆங்கிலத்தில் கேளுங்கள்..." rows="3" style="box-sizing:border-box;width:100%;padding:12px;border-radius:10px;"></textarea>
+<button onclick="askFitCoach()" style="margin-top:10px;padding:12px 18px;border:0;border-radius:10px;background:#7c3aed;color:white;font-weight:bold;" type="button">💬 Ask My Coach / பயிற்சியாளரிடம் கேள்</button>
 <div aria-live="polite" id="coach-response" style="margin-top:16px;line-height:1.7;white-space:pre-line;"></div>
 </section>
 <script>
 function askFitCoach() {
   const goal = document.getElementById('coach-goal').value;
   const preference = document.getElementById('coach-preference').value;
-  const question = document.getElementById('coach-question').value.trim().toLowerCase();
+  const rawQuestion = document.getElementById('coach-question').value.trim();
+  const question = rawQuestion.toLowerCase();
   const response = document.getElementById('coach-response');
+  const language = document.getElementById('coach-language').value;
 
-  if (!question) {
-    response.textContent = '💜 Type your goal or question first!';
+  if (!rawQuestion) {
+    response.textContent = language === 'ta'
+      ? '💜 உங்கள் கேள்வியை முதலில் தட்டச்சு செய்யுங்கள்!'
+      : language === 'en'
+        ? '💜 Type your question first!'
+        : '💜 Type your question first! / முதலில் உங்கள் கேள்வியைத் தட்டச்சு செய்யுங்கள்!';
     return;
   }
 
-  let result = '💜 YOUR PERSONAL FITTRACK PLAN\n\n';
+  let en = '💜 YOUR PERSONAL FITTRACK PLAN\n\n';
+  let ta = '💜 உங்கள் தனிப்பட்ட FITTRACK திட்டம்\n\n';
+  const workoutAsked = /workout|exercise|gym|fitness|beginner|exercise plan|உடற்பயிற்சி|வொர்க்அவுட்|ஜிம்|பயிற்சி/.test(question) || goal === 'beginner' || goal === 'fitness';
+  const foodAsked = /food|meal|breakfast|lunch|dinner|eat|recipe|ingredient|diet|சாப்பாடு|உணவு|காலை|மதிய|இரவு|டயட்/.test(question) || goal === 'weight loss' || goal === 'muscle gain';
+  const waterAsked = /water|hydration|தண்ணீர்|நீர்/.test(question);
+  const restAsked = /sleep|rest|recovery|tired|தூக்கம்|ஓய்வு|சோர்வு/.test(question);
+  const motivationAsked = /motivation|lazy|motivate|மோட்டிவேஷன்|சோம்பல்|உற்சாகம்/.test(question);
 
-  if (/workout|exercise|gym|fitness|beginner|exercise plan/.test(question) || goal === 'beginner' || goal === 'fitness') {
-    result += '🏋️ WORKOUT\n';
-    result += '• Warm up with easy walking or marching for 5 minutes.\n';
-    result += '• Try 8–10 chair squats, wall push-ups and gentle marching.\n';
-    result += '• Cool down with gentle stretches.\n';
-    result += '• Start at a comfortable level and rest when needed.\n\n';
+  if (workoutAsked) {
+    en += '🏋️ WORKOUT\n• Warm up with easy walking or marching for 5 minutes.\n• Try 8–10 chair squats, wall push-ups and gentle marching.\n• Cool down with gentle stretches.\n• Start at a comfortable level and rest when needed.\n\n';
+    ta += '🏋️ உடற்பயிற்சி\n• 5 நிமிடங்கள் மெதுவாக நடந்து உடலைத் தயார்படுத்துங்கள்.\n• நாற்காலி ஸ்குவாட்ஸ் 8–10 முறை, சுவரில் புஷ்-அப்ஸ், மெதுவான நடை முயற்சி செய்யுங்கள்.\n• முடிவில் மெதுவான ஸ்ட்ரெட்சிங் செய்யுங்கள்.\n• உங்களுக்கு வசதியான அளவில் தொடங்கி, தேவைப்பட்டால் ஓய்வு எடுங்கள்.\n\n';
   }
-
-  if (/food|meal|breakfast|lunch|dinner|eat|recipe|ingredient|diet/.test(question) || goal === 'weight loss' || goal === 'muscle gain') {
-    result += '🥗 FOOD IDEAS\n';
-
+  if (foodAsked) {
+    en += '🥗 FOOD IDEAS\n';
+    ta += '🥗 உணவு யோசனைகள்\n';
     if (preference === 'Veg' || preference === 'Both') {
-      result += '• Idli with sambar\n• Dal with rice and vegetables\n• Paneer or chickpea wrap\n• Oats with fruit\n';
+      en += '• Idli with sambar\n• Dal with rice and vegetables\n• Paneer or chickpea wrap\n• Oats with fruit\n';
+      ta += '• சாம்பாருடன் இட்லி\n• பருப்பு, சாதம் மற்றும் காய்கறிகள்\n• பனீர் அல்லது கொண்டைக்கடலை ராப்\n• பழங்களுடன் ஓட்ஸ்\n';
     }
-
     if (preference === 'Non-Veg' || preference === 'Both') {
-      result += '• Egg dosa\n• Chicken with rice and vegetables\n• Egg sandwich\n';
+      en += '• Egg dosa\n• Chicken with rice and vegetables\n• Egg sandwich\n';
+      ta += '• முட்டை தோசை\n• சாதம் மற்றும் காய்கறிகளுடன் சிக்கன்\n• முட்டை சாண்ட்விச்\n';
     }
-
-    result += '\n';
+    en += '\n'; ta += '\n';
   }
-
-  if (/water|hydration/.test(question)) {
-    result += '💧 WATER\nDrink water regularly throughout the day. Needs vary with activity, heat and health.\n\n';
+  if (waterAsked) {
+    en += '💧 WATER\nDrink water regularly throughout the day. Needs vary with activity, heat and health.\n\n';
+    ta += '💧 தண்ணீர்\nநாள் முழுவதும் இடைவெளியில் தண்ணீர் குடியுங்கள். உடற்பயிற்சி, வெப்பம் மற்றும் உடல்நிலைக்கு ஏற்ப தேவை மாறும்.\n\n';
   }
-
-  if (/sleep|rest|recovery|tired/.test(question)) {
-    result += '😴 REST & RECOVERY\n• Aim for a regular sleep schedule.\n• Include recovery days and avoid pushing through pain.\n\n';
+  if (restAsked) {
+    en += '😴 REST & RECOVERY\n• Aim for a regular sleep schedule.\n• Include recovery days and avoid pushing through pain.\n\n';
+    ta += '😴 ஓய்வு மற்றும் மீட்பு\n• தினமும் சீரான நேரத்தில் தூங்க முயற்சி செய்யுங்கள்.\n• ஓய்வு நாட்களைத் திட்டமிடுங்கள்; வலி இருந்தால் வற்புறுத்தி பயிற்சி செய்யாதீர்கள்.\n\n';
   }
-
-  if (/motivation|lazy|motivate/.test(question)) {
-    result += '🌟 DAILY MOTIVATION\nSmall steps count! Choose one achievable healthy habit today and build consistency.\n\n';
+  if (motivationAsked) {
+    en += '🌟 DAILY MOTIVATION\nSmall steps count! Choose one achievable healthy habit today and build consistency.\n\n';
+    ta += '🌟 தினசரி ஊக்கம்\nசிறிய முயற்சிகளும் முக்கியம்! இன்று செய்யக்கூடிய ஒரு நல்ல பழக்கத்தைத் தேர்வு செய்து தொடர்ந்து செய்யுங்கள்.\n\n';
   }
-
-  if (result === '💜 YOUR PERSONAL FITTRACK PLAN\n\n') {
-    result += '🌟 GENERAL ADVICE\n• Eat balanced meals with vegetables, protein and suitable portions.\n• Stay active at a comfortable level.\n• Sleep well and drink water regularly.\n• Ask about workouts, food, hydration or recovery for more specific suggestions.\n\n';
+  if (!workoutAsked && !foodAsked && !waterAsked && !restAsked && !motivationAsked) {
+    en += '🌟 GENERAL ADVICE\n• Eat balanced meals with vegetables, protein and suitable portions.\n• Stay active at a comfortable level.\n• Sleep well and drink water regularly.\n• Ask about workouts, food, hydration or recovery for more specific suggestions.\n\n';
+    ta += '🌟 பொதுவான ஆலோசனைகள்\n• காய்கறிகள், புரதம் மற்றும் சரியான அளவுள்ள சமச்சீர் உணவைச் சாப்பிடுங்கள்.\n• உங்களுக்கு வசதியான அளவில் சுறுசுறுப்பாக இருங்கள்.\n• நன்றாகத் தூங்கி, தண்ணீர் சீராகக் குடியுங்கள்.\n• மேலும் குறிப்பிட்ட ஆலோசனைக்கு உடற்பயிற்சி, உணவு, தண்ணீர் அல்லது ஓய்வு பற்றி கேளுங்கள்.\n\n';
   }
-
   if (goal === 'weight loss') {
-    result += '🎯 GOAL TIP\nFocus on sustainable habits and balanced meals, not crash diets.\n\n';
+    en += '🎯 GOAL TIP\nFocus on sustainable habits and balanced meals, not crash diets.\n\n';
+    ta += '🎯 இலக்கு குறிப்பு\nவிரைவான கடுமையான டயட்டைவிட, நீண்டகாலம் தொடரக்கூடிய நல்ல பழக்கங்கள் மற்றும் சமச்சீர் உணவில் கவனம் செலுத்துங்கள்.\n\n';
   } else if (goal === 'muscle gain') {
-    result += '🎯 GOAL TIP\nCombine appropriate strength training, enough food and protein, and recovery.\n\n';
+    en += '🎯 GOAL TIP\nCombine appropriate strength training, enough food and protein, and recovery.\n\n';
+    ta += '🎯 இலக்கு குறிப்பு\nஉகந்த வலிமைப் பயிற்சி, போதுமான உணவு மற்றும் புரதம், ஓய்வு ஆகியவற்றை இணைத்துக் கொள்ளுங்கள்.\n\n';
   }
+  en += 'ℹ️ This is an offline rule-based coach, not a live AI or medical professional. Adapt exercises to your ability and seek professional advice for health concerns.';
+  ta += 'ℹ️ இது இணையமில்லாமல் விதிகளின் அடிப்படையில் செயல்படும் பயிற்சி உதவியாளர்; நேரடி AI அல்லது மருத்துவர் அல்ல. உங்கள் திறனுக்கு ஏற்ப பயிற்சி செய்யுங்கள்; உடல்நலக் கவலைகளுக்கு தகுதியான நிபுணரை அணுகுங்கள்.';
 
-  result += 'ℹ️ This is an offline rule-based coach, not a live AI or medical professional. Adapt exercises to your ability and seek professional advice for health concerns.';
-
-  response.textContent = result;
-}
-</script>
+  response.textContent = language === 'ta' ? ta : language === 'en' ? en : en + '\n\n' + ta;
+}</script>
 </div>
 </section><section class="panel" id="history">
 <div class="section-heading">
