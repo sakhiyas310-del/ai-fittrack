@@ -131,27 +131,27 @@
 </section>
 
 <section class="panel" id="wellness">
-<h1>Wellness Hub 💜</h1>
-<p class="subtitle">Your daily wellness tools, food ideas, and personal coach — all in one place.</p>
+<h1>Wellness Hub / நலவாழ்வு மையம் 💜</h1>
+<p class="subtitle">Your daily wellness tools, food ideas, and personal coach — all in one place. / தினசரி நலவாழ்வு கருவிகள், உணவு யோசனைகள், தனிப்பட்ட பயிற்சியாளர் — அனைத்தும் ஒரே இடத்தில்.</p>
 <div class="wellness-grid">
 <!-- Water Tracker -->
 <section class="card" id="water-tracker">
-<h2>💧 Water Tracker</h2>
-<p>Daily Goal: 8 glasses</p>
+<h2>💧 Water Tracker / தண்ணீர் கண்காணிப்பு</h2>
+<p>Daily Goal: 8 glasses / தினசரி இலக்கு: 8 டம்ளர்</p>
 <div id="water-count">0 / 8 glasses</div>
 <button onclick="changeWater(-1)">−</button>
-<button onclick="changeWater(1)">+ Add Glass</button>
+<button onclick="changeWater(1)">+ Add Glass / டம்ளர் சேர்க்க</button>
 </section>
 <!-- Daily Streak -->
 <section class="card" id="daily-streak">
-<h2>🔥 Daily Streak</h2>
+<h2>🔥 Daily Streak / தொடர்ச்சியான நாட்கள்</h2>
 <p id="streak-count">0 days</p>
-<button onclick="completeToday()">Complete Today</button>
+<button onclick="completeToday()">Complete Today / இன்றைய இலக்கை முடித்தேன்</button>
 </section>
 <!-- Weekly Progress -->
 <section class="card" id="weekly-progress">
-<h2>📊 Weekly Progress</h2>
-<p>This week: <span id="weekly-count">0</span> completed days</p>
+<h2>📊 Weekly Progress / வார முன்னேற்றம்</h2>
+<p>This week: <span id="weekly-count">0</span> completed days / இந்த வாரம் முடித்த நாட்கள்</p>
 </section>
 <style>
 #water-tracker, #daily-streak, #weekly-progress {
@@ -179,9 +179,9 @@ let completed = JSON.parse(localStorage.getItem('fitWeek') || '[]');
 
 function showProgress() {
   document.getElementById('water-count').textContent =
-    water + ' / 8 glasses';
+    water + ' / 8 glasses (டம்ளர்)';
   document.getElementById('streak-count').textContent =
-    streak + ' days';
+    streak + ' days / நாட்கள்';
   document.getElementById('weekly-count').textContent =
     completed.length;
 }
@@ -211,9 +211,9 @@ showProgress();
 <h2>🥗 Food Preference / உணவு விருப்பம்</h2>
 <label for="foodType">Choose your food type / உணவு வகையைத் தேர்வு செய்க:</label>
 <select id="foodType">
-<option value="Veg">🥦 Vegetarian</option>
-<option value="Non-Veg">🍗 Non-Vegetarian</option>
-<option value="Both">🍽️ Both</option>
+<option value="Veg">🥦 Vegetarian / சைவம்</option>
+<option value="Non-Veg">🍗 Non-Vegetarian / அசைவம்</option>
+<option value="Both">🍽️ Both / இரண்டும்</option>
 </select>
 <div id="automatic-meal-suggestions" style="margin-top:16px;padding:15px;border-radius:12px;background:#f3e8ff;color:#4c1d95;">
 <h3>🍱 Your Daily Meal Suggestions / தினசரி உணவு பரிந்துரைகள்</h3>
@@ -227,18 +227,18 @@ showProgress();
 function updateAutomaticMeals() {
   const type = document.getElementById('foodType').value;
   const veg = {
-    breakfast: ['Idli with sambar', 'Vegetable dosa', 'Oats with fruit'],
-    morning: ['Banana and almonds', 'Seasonal fruit', 'Roasted chana'],
-    lunch: ['Rice with sambar and vegetables', 'Chapati with dal', 'Curd rice with vegetables'],
-    evening: ['Sundal', 'Fruit bowl', 'Buttermilk with roasted chana'],
-    dinner: ['Vegetable dosa', 'Chapati with vegetable kurma', 'Paneer wrap']
+    breakfast: ['இட்லி with சாம்பார் (Idli with sambar)', 'காய்கறி தோசை (Vegetable dosa)', 'பழங்களுடன் ஓட்ஸ் (Oats with fruit)'],
+    morning: ['வாழைப்பழம் மற்றும் பாதாம் (Banana and almonds)', 'பருவகால பழங்கள் (Seasonal fruit)', 'வறுத்த கொண்டைக்கடலை (Roasted chana)'],
+    lunch: ['சாம்பார், சாதம், காய்கறிகள் (Rice with sambar and vegetables)', 'பருப்புடன் சப்பாத்தி (Chapati with dal)', 'காய்கறிகளுடன் தயிர் சாதம் (Curd rice with vegetables)'],
+    evening: ['சுண்டல் (Sundal)', 'பழக் கிண்ணம் (Fruit bowl)', 'மோர் மற்றும் வறுத்த கொண்டைக்கடலை (Buttermilk with roasted chana)'],
+    dinner: ['காய்கறி தோசை (Vegetable dosa)', 'காய்கறி குருமாவுடன் சப்பாத்தி (Chapati with vegetable kurma)', 'பனீர் ராப் (Paneer wrap)']
   };
   const nonVeg = {
-    breakfast: ['Egg dosa', 'Boiled eggs with toast', 'Vegetable omelette'],
-    morning: ['Boiled egg', 'Fruit and yogurt', 'Roasted chana'],
-    lunch: ['Chicken with rice and vegetables', 'Egg rice with vegetables', 'Fish with rice'],
-    evening: ['Boiled egg and fruit', 'Yogurt', 'Chicken sandwich'],
-    dinner: ['Egg dosa', 'Grilled chicken wrap', 'Chicken soup with toast']
+    breakfast: ['முட்டை தோசை (Egg dosa)', 'வேகவைத்த முட்டை மற்றும் டோஸ்ட் (Boiled eggs with toast)', 'காய்கறி ஆம்லெட் (Vegetable omelette)'],
+    morning: ['வேகவைத்த முட்டை (Boiled egg)', 'பழங்கள் மற்றும் தயிர் (Fruit and yogurt)', 'வறுத்த கொண்டைக்கடலை (Roasted chana)'],
+    lunch: ['சாதம், காய்கறிகளுடன் சிக்கன் (Chicken with rice and vegetables)', 'காய்கறிகளுடன் முட்டை சாதம் (Egg rice with vegetables)', 'சாதத்துடன் மீன் (Fish with rice)'],
+    evening: ['வேகவைத்த முட்டை மற்றும் பழம் (Boiled egg and fruit)', 'தயிர் (Yogurt)', 'சிக்கன் சாண்ட்விச் (Chicken sandwich)'],
+    dinner: ['முட்டை தோசை (Egg dosa)', 'கிரில் சிக்கன் ராப் (Grilled chicken wrap)', 'டோஸ்டுடன் சிக்கன் சூப் (Chicken soup with toast)']
   };
   function chooseMeal(v, n, offset) {
     const choices = type === 'Veg' ? v : type === 'Non-Veg' ? n : [...v, ...n];
@@ -253,7 +253,7 @@ function updateAutomaticMeals() {
 document.getElementById('foodType').addEventListener('change', updateAutomaticMeals);
 updateAutomaticMeals();
 </script>
-<button onclick="saveFoodPlan()">Save Food Plan 💜</button>
+<button onclick="saveFoodPlan()">Save Food Plan / உணவு திட்டத்தைச் சேமி 💜</button>
 <p id="foodSaved"></p>
 </section>
 <style>
@@ -319,7 +319,7 @@ function saveFoodPlan() {
     dinner: document.getElementById('auto-dinner').textContent
   };
   localStorage.setItem('aiFitFoodPlan', JSON.stringify(plan));
-  document.getElementById('foodSaved').textContent = '💜 Your five-meal food plan has been saved!';
+  document.getElementById('foodSaved').textContent = '💜 Your five-meal food plan has been saved! / உங்கள் ஐந்து வேளை உணவு திட்டம் சேமிக்கப்பட்டது!';
 }
 (function loadFoodPlan() {
   try {
@@ -337,26 +337,26 @@ function suggestAIFood() {
   const answer = document.getElementById('ai-food-answer');
 
   if (!request) {
-    answer.textContent = '💜 First, tell me what food you want or what ingredients you have!';
+    answer.textContent = '💜 உங்களுக்கு என்ன உணவு வேண்டும் அல்லது என்ன பொருட்கள் உள்ளன என்று சொல்லுங்கள்! / Tell me what food you want or which ingredients you have!';
     return;
   }
 
   const vegFoods = [
-    'Idli with sambar',
-    'Vegetable dosa',
+    'இட்லி with சாம்பார் (Idli with sambar)',
+    'காய்கறி தோசை (Vegetable dosa)',
     'Paneer and vegetable wrap',
     'Dal with rice',
     'Chickpea salad',
-    'Oats with fruit',
+    'பழங்களுடன் ஓட்ஸ் (Oats with fruit)',
     'Vegetable sandwich',
-    'Chapati with vegetable kurma'
+    'காய்கறி குருமாவுடன் சப்பாத்தி (Chapati with vegetable kurma)'
   ];
 
   const nonVegFoods = [
     'Boiled eggs with whole-wheat toast',
-    'Chicken with rice and vegetables',
+    'சாதம், காய்கறிகளுடன் சிக்கன் (Chicken with rice and vegetables)',
     'Egg dosa with sambar',
-    'Grilled chicken wrap',
+    'கிரில் சிக்கன் ராப் (Grilled chicken wrap)',
     'Egg vegetable sandwich',
     'Chicken soup with whole-wheat toast'
   ];
@@ -381,10 +381,10 @@ function suggestAIFood() {
       paneer: 'Paneer and vegetable wrap',
       egg: 'Egg vegetable sandwich',
       eggs: 'Boiled eggs with whole-wheat toast',
-      chicken: 'Chicken with rice and vegetables',
+      chicken: 'சாதம், காய்கறிகளுடன் சிக்கன் (Chicken with rice and vegetables)',
       rice: 'Rice with dal and vegetables',
       bread: 'Vegetable sandwich',
-      oats: 'Oats with fruit',
+      oats: 'பழங்களுடன் ஓட்ஸ் (Oats with fruit)',
       potato: 'Potato masala dosa',
       tomato: 'Tomato dosa or tomato rice',
       dal: 'Dal with rice',
@@ -410,43 +410,43 @@ function suggestAIFood() {
   const uniqueFoods = [...new Set(foods)].slice(0, 4);
 
   answer.textContent =
-    '💜 Food ideas based on your request:\n\n' +
+    '💜 உங்கள் கேள்விக்கான உணவு யோசனைகள் / Food ideas based on your request:\n\n' +
     uniqueFoods.map((food, i) => (i + 1) + '. ' + food).join('\n') +
-    '\n\n🥗 Choose a balanced portion with vegetables and water. ' +
-    '\n\nNote: These are smart suggestions, not a live AI response. Tell me more ingredients or your meal preference for different ideas.';
+    '\n\n🥗 காய்கறிகளுடன் சமச்சீர் அளவு உணவு சாப்பிட்டு தண்ணீர் குடியுங்கள். / Choose balanced portions with vegetables and water. ' +
+    '\n\nகுறிப்பு: இவை தானியங்கி பரிந்துரைகள்; நேரடி AI பதில் அல்ல. / Note: These are smart suggestions, not a live AI response.';
 }
 </script>
 <!-- All-in-One Food + Fitness Coach -->
 <section id="fit-coach" style="grid-column:1 / -1;width:100%;max-width:none;box-sizing:border-box;margin:0;padding:20px;border-radius:18px;background:#ede9fe;color:#2e1065;">
-<h2>💜 FitTrack Smart Coach</h2>
+<h2>💜 FitTrack Smart Coach / ஸ்மார்ட் பயிற்சியாளர்</h2>
 <p>Tell me your fitness goal, food preference, or workout question! / உங்கள் உடற்பயிற்சி இலக்கு, உணவு விருப்பம் அல்லது கேள்வியைச் சொல்லுங்கள்!</p>
 <div style="display:flex;flex-wrap:wrap;align-items:center;gap:18px;margin:18px 0;padding:16px;border-radius:16px;background:linear-gradient(135deg,#f5eaff,#e9ddff);">
 <div style="flex:1;min-width:180px;text-align:center;">
 <img alt="Fitness coach training" src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&amp;fit=crop&amp;w=500&amp;q=80" style="width:100%;max-width:260px;height:250px;object-fit:cover;border-radius:16px;"/>
-<h3 style="color:#6d28d9;margin:10px 0 4px;">🏋️ Your FitTrack Coach</h3>
-<p style="margin:0;color:#4c1d95;">Small Steps, Big Changes 💜</p>
+<h3 style="color:#6d28d9;margin:10px 0 4px;">🏋️ Your FitTrack Coach / உங்கள் FitTrack பயிற்சியாளர்</h3>
+<p style="margin:0;color:#4c1d95;">Small Steps, Big Changes / சிறிய முயற்சி, பெரிய மாற்றம் 💜</p>
 </div>
 <div style="flex:1;min-width:180px;color:#4c1d95;">
-<p>🥗 Healthy Food</p>
-<p>💪 Active Lifestyle</p>
-<p>💧 Stay Hydrated</p>
-<p>🌙 Better Sleep</p>
-<p><strong>Believe in yourself!</strong></p>
+<p>🥗 Healthy Food / ஆரோக்கியமான உணவு</p>
+<p>💪 Active Lifestyle / சுறுசுறுப்பான வாழ்க்கைமுறை</p>
+<p>💧 Stay Hydrated / போதுமான தண்ணீர் குடியுங்கள்</p>
+<p>🌙 Better Sleep / நல்ல தூக்கம்</p>
+<p><strong>Believe in yourself! / உங்களை நம்புங்கள்!</strong></p>
 </div>
 </div>
-<label for="coach-goal">Your Goal</label>
+<label for="coach-goal">Your Goal / உங்கள் இலக்கு</label>
 <select id="coach-goal" style="display:block;width:100%;padding:10px;margin:8px 0;">
-<option value="general">Stay healthy</option>
-<option value="weight loss">Weight loss</option>
-<option value="muscle gain">Muscle gain</option>
-<option value="fitness">Improve fitness</option>
-<option value="beginner">Beginner workout</option>
+<option value="general">Stay healthy / ஆரோக்கியமாக இருத்தல்</option>
+<option value="weight loss">Weight loss / எடை குறைத்தல்</option>
+<option value="muscle gain">Muscle gain / தசை வளர்ச்சி</option>
+<option value="fitness">Improve fitness / உடற்தகுதியை மேம்படுத்துதல்</option>
+<option value="beginner">Beginner workout / தொடக்கநிலை பயிற்சி</option>
 </select>
-<label for="coach-preference">Food Preference</label>
+<label for="coach-preference">Food Preference / உணவு விருப்பம்</label>
 <select id="coach-preference" style="display:block;width:100%;padding:10px;margin:8px 0;">
-<option value="Veg">Vegetarian</option>
-<option value="Non-Veg">Non-Vegetarian</option>
-<option value="Both">Both</option>
+<option value="Veg">Vegetarian / சைவம்</option>
+<option value="Non-Veg">Non-Vegetarian / அசைவம்</option>
+<option value="Both">Both / இரண்டும்</option>
 </select>
 <label for="coach-language" style="display:block;margin:10px 0 6px;font-weight:600;">Response language / பதில் மொழி</label>
 <select id="coach-language" style="display:block;width:100%;padding:10px;margin:8px 0;border-radius:10px;">
