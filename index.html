@@ -728,5 +728,112 @@ function saveFoodPlan() {
   });
 })();
 </script>
+ 
+ 
+<!-- AI Food Planner -->
+<section id="ai-food-planner" style="margin:24px 0;padding:20px;border-radius:18px;background:#f3e8ff;color:#2e1065;">
+  <h2>🤖 AI Food Planner</h2>
+  <p>Tell me what food you want, your goal, or ingredients you have!</p>
+
+  <label for="ai-food-type">Food Preference</label>
+  <select id="ai-food-type" style="display:block;width:100%;padding:10px;margin:8px 0;">
+    <option value="Both">Veg & Non-Veg</option>
+    <option value="Veg">Vegetarian</option>
+    <option value="Non-Veg">Non-Vegetarian</option>
+  </select>
+
+  <textarea id="ai-food-request" rows="3" placeholder="Example: Weight loss-ku veg dinner sollu. Enkitta paneer irukku." style="box-sizing:border-box;width:100%;padding:12px;border-radius:10px;"></textarea>
+
+  <button type="button" onclick="suggestAIFood()" style="margin-top:10px;padding:12px 18px;border:0;border-radius:10px;background:#7c3aed;color:white;font-weight:bold;">✨ Suggest Food</button>
+
+  <div id="ai-food-answer" aria-live="polite" style="margin-top:16px;line-height:1.7;white-space:pre-line;"></div>
+</section>
+
+<script>
+function suggestAIFood() {
+  const request = document.getElementById('ai-food-request').value.trim().toLowerCase();
+  const preference = document.getElementById('ai-food-type').value;
+  const answer = document.getElementById('ai-food-answer');
+
+  if (!request) {
+    answer.textContent = '💜 First, tell me what food you want or what ingredients you have!';
+    return;
+  }
+
+  const vegFoods = [
+    'Idli with sambar',
+    'Vegetable dosa',
+    'Paneer and vegetable wrap',
+    'Dal with rice',
+    'Chickpea salad',
+    'Oats with fruit',
+    'Vegetable sandwich',
+    'Chapati with vegetable kurma'
+  ];
+
+  const nonVegFoods = [
+    'Boiled eggs with whole-wheat toast',
+    'Chicken with rice and vegetables',
+    'Egg dosa with sambar',
+    'Grilled chicken wrap',
+    'Egg vegetable sandwich',
+    'Chicken soup with whole-wheat toast'
+  ];
+
+  let foods = preference === 'Veg' ? vegFoods :
+              preference === 'Non-Veg' ? nonVegFoods :
+              [...vegFoods, ...nonVegFoods];
+
+  if (request.includes('breakfast')) {
+    foods = foods.filter(f => /idli|dosa|oats|egg|sandwich/i.test(f));
+  } else if (request.includes('lunch')) {
+    foods = foods.filter(f => /rice|chapati|chicken|dal|chickpea/i.test(f));
+  } else if (request.includes('dinner')) {
+    foods = foods.filter(f => /dosa|wrap|soup|chapati|salad/i.test(f));
+  }
+
+  const ingredients = ['paneer', 'egg', 'eggs', 'chicken', 'rice', 'bread', 'oats', 'potato', 'tomato', 'dal', 'chickpea'];
+  const matched = ingredients.filter(item => request.includes(item));
+
+  if (matched.length) {
+    const ingredientIdeas = {
+      paneer: 'Paneer and vegetable wrap',
+      egg: 'Egg vegetable sandwich',
+      eggs: 'Boiled eggs with whole-wheat toast',
+      chicken: 'Chicken with rice and vegetables',
+      rice: 'Rice with dal and vegetables',
+      bread: 'Vegetable sandwich',
+      oats: 'Oats with fruit',
+      potato: 'Potato masala dosa',
+      tomato: 'Tomato dosa or tomato rice',
+      dal: 'Dal with rice',
+      chickpea: 'Chickpea salad'
+    };
+    foods = matched.map(item => ingredientIdeas[item]).filter(Boolean);
+  }
+
+  if (request.includes('weight loss') || request.includes('lose weight')) {
+    foods = foods.filter(f => /idli|sambar|vegetable|dal|chickpea|oats|soup|grilled|wrap/i.test(f));
+  }
+
+  if (request.includes('high protein') || request.includes('protein')) {
+    foods = foods.filter(f => /paneer|egg|chicken|dal|chickpea/i.test(f));
+  }
+
+  if (!foods.length) {
+    foods = preference === 'Veg' ? vegFoods :
+            preference === 'Non-Veg' ? nonVegFoods :
+            [...vegFoods, ...nonVegFoods];
+  }
+
+  const uniqueFoods = [...new Set(foods)].slice(0, 4);
+
+  answer.textContent =
+    '💜 Food ideas based on your request:\n\n' +
+    uniqueFoods.map((food, i) => (i + 1) + '. ' + food).join('\n') +
+    '\n\n🥗 Choose a balanced portion with vegetables and water. ' +
+    '\n\nNote: These are smart suggestions, not a live AI response. Tell me more ingredients or your meal preference for different ideas.';
+}
+</script>
 </body>
 </html>
