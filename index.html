@@ -60,6 +60,37 @@
     grid-template-columns: 1fr;
   }
 }
+  /* Reduce extra space above Wellness Hub on mobile */
+@media (max-width: 760px) {
+  .app {
+    display: block;
+    min-height: 0;
+    height: auto;
+  }
+
+  .main {
+    padding: 12px 15px 24px;
+    margin: 0;
+    min-height: 0;
+  }
+
+  .topbar {
+    margin-bottom: 12px;
+  }
+
+  #wellness {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  #wellness h1 {
+    margin-top: 0;
+  }
+
+  #wellness .subtitle {
+    margin-bottom: 16px;
+  }
+}
 </style>
 </head>
 <body>
