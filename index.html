@@ -736,9 +736,9 @@ function updateAutomaticMeals() {
     type === 'Non-Veg' ? nonVeg.dinner :
     [...veg.dinner, ...nonVeg.dinner];
 
-  document.getElementById('auto-breakfast').textContent = chooseMeal(breakfasts, day);
-  document.getElementById('auto-lunch').textContent = chooseMeal(lunches, day + 1);
-  document.getElementById('auto-dinner').textContent = chooseMeal(dinners, day + 2);
+  document.getElementById('suggested-breakfast').textContent = chooseMeal(breakfasts, day);
+document.getElementById('suggested-lunch').textContent = chooseMeal(lunches, day + 1);
+document.getElementById('suggested-dinner').textContent = chooseMeal(dinners, day + 2);
 }
 
 document.getElementById('foodType').addEventListener('change', updateAutomaticMeals);
@@ -755,6 +755,11 @@ document.getElementById('today-date').textContent =
     year: 'numeric'
   });
 </script>
+ <div id="meal-suggestions-inline" style="margin:12px 0;padding:14px;border-radius:12px;background:#f3e8ff;color:#4c1d95;">
+  <p>🌅 <strong>Suggested Breakfast:</strong> <span id="suggested-breakfast">Idli with sambar</span></p>
+  <p>☀️ <strong>Suggested Lunch:</strong> <span id="suggested-lunch">Rice with dal and vegetables</span></p>
+  <p>🌙 <strong>Suggested Dinner:</strong> <span id="suggested-dinner">Chapati with paneer</span></p>
+</div> 
 
   <label for="breakfast">Breakfast</label>
   <input id="breakfast" placeholder="e.g. Idli, dosa, eggs">
