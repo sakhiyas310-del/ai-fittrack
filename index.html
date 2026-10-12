@@ -38,6 +38,7 @@
     <button class="nav-btn" data-panel="food"><span class="ico">♡</span>Food Tracker</button>
     <button class="nav-btn" data-panel="progress"><span class="ico">▥</span>My Progress</button>
     <button class="nav-btn" data-panel="plan"><span class="ico">✧</span>AI Workout Plan</button>
+    <button class="nav-btn" data-panel="history"><span class="icon">📅</span>Workout History</button>
   </nav>
   <div class="sidebar-bottom"><div class="mini-card"><div class="spark">🌷</div><h4>Small steps matter!</h4><p>Every healthy choice is a little win. Keep going at your own pace.</p></div></div>
 </aside>
@@ -149,6 +150,53 @@
   </div>
 </section>
 <footer>Made with 💜 for your wellness journey · AI FitTrack</footer>
+<section class="panel" id="history" style="display:none;">
+  <div class="section-heading">
+    <h2>📅 Workout History</h2>
+    <p>Your past workouts in one place 💜</p>
+  </div>
+  <div id="workout-history-list">
+    <p>No workouts recorded yet. Complete a workout to start your history!</p>
+  </div>
+  <button class="btn btn-primary" type="button" onclick="clearWorkoutHistory()">Clear History</button>
+</section>
+
+<script>
+function renderWorkoutHistory() {
+  const container = document.getElementById('workout-history-list');
+  if (!container) return;
+  let history = [];
+  try {
+    history = JSON.parse(localStorage.getItem('fittrack_workout_history') || '[]');
+  } catch (e) {}
+
+  if (!history.length) {
+    container.innerHTML = '<p>No workouts recorded yet. Complete a workout to start your history!</p>';
+    return;
+  }
+
+  container.innerHTML = history.map(item =>
+    '<div style="padding:12px;margin:10px 0;border-radius:12px;background:#f3e8ff;">' +
+    '<strong>' + escapeHistoryText(item.name) + '</strong><br>' +
+    '📅 ' + escapeHistoryText(item.date) + ' · ⏱️ ' + escapeHistoryText(item.duration || 'Not set') +
+    '</div>'
+  ).join('');
+}
+
+function escapeHistoryText(value) {
+  const div = document.createElement('div');
+  div.textContent = String(value ?? '');
+  return div.innerHTML;
+}
+
+function clearWorkoutHistory() {
+  if (!confirm('Clear all saved workout history?')) return;
+  localStorage.removeItem('fittrack_workout_history');
+  renderWorkoutHistory();
+}
+
+document.addEventListener('DOMContentLoaded', renderWorkoutHistory);
+</script>
 </main>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
