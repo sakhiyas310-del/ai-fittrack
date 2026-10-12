@@ -24,6 +24,9 @@
 @media(max-width:1050px){.sidebar{width:205px}.main{padding:24px 22px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.app{display:block}.sidebar{width:100%;min-height:0;padding:15px;position:static;border-right:0;border-bottom:1px solid var(--border)}.brand{padding:0 5px 15px}.menu-label,.sidebar-bottom{display:none}.nav-list{display:flex;overflow-x:auto;gap:5px}.nav-btn{width:auto;white-space:nowrap;margin:0;padding:10px}.nav-btn .ico{width:auto}.main{padding:22px 15px}.hero{padding:24px 21px;min-height:170px}.hero-art{max-width:190px;padding:0}.hero-art img{max-width:180px}.hero h1{font-size:25px}.content-grid{grid-template-columns:1fr}.quick-grid{grid-template-columns:1fr}.quick-card p{min-height:0}.plan-grid{grid-template-columns:1fr}.topbar{margin-bottom:20px}.date-chip{display:none}}
 @media(max-width:420px){.stats{grid-template-columns:1fr 1fr;gap:9px}.card{padding:14px}.stat-number{font-size:23px}.form-grid{grid-template-columns:1fr}.hero-art{display:none}h1{font-size:25px}}
+
+.wellness-grid > section, .wellness-grid > div { min-width:0; max-width:100%; }
+.wellness-grid input, .wellness-grid select, .wellness-grid textarea { max-width:100%; }
 </style>
 </head>
 <body>
@@ -108,33 +111,7 @@
   <div class="section-head"><div><h2>Your activity chart</h2><p>Daily workout minutes from your saved entries.</p></div></div><div class="card"><div class="chart" id="progressChart"></div></div>
   <div class="notice">Your activity chart uses the workouts you log in this browser. It isn't a medical assessment or a measure of your worth.</div>
   
-<section id="progress" class="page-section">
-  <h1>My Fitness Progress 💜</h1>
-  <p class="subtitle">Small steps every day!</p>
 
-  <div class="card">
-    <h2>💧 Water Tracker</h2>
-    <p>Daily goal: 8 glasses</p>
-    <h3><span id="waterCount">0</span> / 8 glasses</h3>
-    <progress id="waterProgress" value="0" max="8" style="width:100%"></progress>
-    <button class="btn btn-primary" type="button" onclick="addWater()">+ Add a glass</button>
-    <button class="btn" type="button" onclick="resetWater()">Reset</button>
-  </div>
-
-  <div class="card">
-    <h2>🔥 Daily Streak</h2>
-    <p>Days you check in and stay active.</p>
-    <h3><span id="streakCount">0</span> day streak</h3>
-    <button class="btn btn-primary" type="button" onclick="checkIn()">Complete today's check-in</button>
-  </div>
-
-  <div class="card">
-    <h2>📊 Weekly Progress</h2>
-    <p>Workout check-ins this week</p>
-    <h3><span id="weekCount">0</span> / 7 days</h3>
-    <progress id="weekProgress" value="0" max="7" style="width:100%"></progress>
-  </div>
-</section>
 
 </section>
 <section class="panel" id="plan">
@@ -168,18 +145,17 @@ function renderWorkoutHistory() {
   if (!container) return;
   let history = [];
   try {
-    history = JSON.parse(localStorage.getItem('fittrack_workout_history') || '[]');
-  } catch (e) {}
-
-  if (!history.length) {
-    container.innerHTML = '<p>No workouts recorded yet. Complete a workout to start your history!</p>';
+    history = JSON.parse(localStorage.getItem('fittrack_workouts') || '[]');
+  } catch (e) { history = []; }
+  if (!Array.isArray(history) || !history.length) {
+    container.innerHTML = '<p>No workouts recorded yet. Save a workout in Workout Tracker and it will appear here.</p>';
     return;
   }
-
   container.innerHTML = history.map(item =>
     '<div style="padding:12px;margin:10px 0;border-radius:12px;background:#f3e8ff;">' +
     '<strong>' + escapeHistoryText(item.name) + '</strong><br>' +
-    '📅 ' + escapeHistoryText(item.date) + ' · ⏱️ ' + escapeHistoryText(item.duration || 'Not set') +
+    '📅 ' + escapeHistoryText(item.date) + ' · ⏱️ ' + escapeHistoryText(item.minutes || item.duration || 'Not set') + ' minutes' +
+    (item.type ? ' · ' + escapeHistoryText(item.type) : '') +
     '</div>'
   ).join('');
 }
@@ -192,25 +168,12 @@ function escapeHistoryText(value) {
 
 function clearWorkoutHistory() {
   if (!confirm('Clear all saved workout history?')) return;
-  localStorage.removeItem('fittrack_workout_history');
+  localStorage.removeItem('fittrack_workouts');
   renderWorkoutHistory();
 }
 
 document.addEventListener('DOMContentLoaded', renderWorkoutHistory);
 </script>
-
-<section class="panel" id="wellness">
-  <h1>Wellness Hub 💜</h1><p class="subtitle">Water, daily habits, meal ideas and your personal wellness coach — all in one place.</p>
-  <div class="stats">
-    <div class="card"><h2>💧 Water Tracker</h2><p>Daily goal: 8 glasses</p><h3><span id="hubWaterCount">0</span> / 8 glasses</h3><progress id="hubWaterProgress" value="0" max="8" style="width:100%"></progress><button class="btn btn-primary" type="button" onclick="hubAddWater(1)">+ Add a glass</button> <button class="btn btn-light" type="button" onclick="hubResetWater()">Reset</button></div>
-    <div class="card"><h2>🔥 Daily Streak</h2><p>Check in once a day to build your habit.</p><h3><span id="hubStreakCount">0</span> day streak</h3><button class="btn btn-primary" type="button" onclick="hubCheckIn()">Complete today's check-in</button><p id="hubCheckinMessage" aria-live="polite"></p></div>
-    <div class="card"><h2>📊 Weekly Progress</h2><p>Days checked in this week</p><h3><span id="hubWeekCount">0</span> / 7 days</h3><progress id="hubWeekProgress" value="0" max="7" style="width:100%"></progress></div>
-  </div>
-  <div class="card form-card" style="margin-top:20px"><h2>🥗 Food Preference & Daily Meal Suggestions</h2><div class="field"><label for="hubFoodType">Choose your food preference</label><select id="hubFoodType"><option value="Veg">🥦 Vegetarian</option><option value="Non-Veg">🍗 Non-vegetarian</option><option value="Both">🍽️ Both</option></select></div><div class="notice" style="margin-top:12px"><h3>🍱 Today's meal ideas</h3><p>🌅 Breakfast: <strong id="hubBreakfast">Idli with sambar</strong></p><p>☀️ Lunch: <strong id="hubLunch">Rice with dal and vegetables</strong></p><p>🌙 Dinner: <strong id="hubDinner">Chapati with vegetables</strong></p></div></div>
-  <div class="card form-card" style="margin-top:20px"><h2>📝 My Food Plan</h2><p class="subtitle">Save your meal notes in this browser.</p><form id="hubFoodPlanForm"><div class="field"><label for="hubPlanBreakfast">Breakfast</label><input id="hubPlanBreakfast" placeholder="e.g. Idli, dosa, oats"></div><div class="field"><label for="hubPlanLunch">Lunch</label><input id="hubPlanLunch" placeholder="e.g. Rice, vegetables, dal"></div><div class="field"><label for="hubPlanDinner">Dinner</label><input id="hubPlanDinner" placeholder="e.g. Chapati and paneer"></div><button class="btn btn-primary" type="submit">Save Food Plan 💜</button><p id="hubFoodSaved" aria-live="polite"></p></form></div>
-  <div class="card form-card" style="margin-top:20px"><h2>🤖 FitTrack Smart Coach</h2><p class="subtitle">Ask for simple workout, food, hydration or rest ideas.</p><div class="field"><label for="hubCoachGoal">Your goal</label><select id="hubCoachGoal"><option value="general">Stay healthy</option><option value="weight loss">Weight management</option><option value="muscle gain">Build strength</option><option value="beginner">Beginner workout</option></select></div><div class="field"><label for="hubCoachPreference">Food preference</label><select id="hubCoachPreference"><option value="Veg">Vegetarian</option><option value="Non-Veg">Non-vegetarian</option><option value="Both">Both</option></select></div><div class="field"><label for="hubCoachQuestion">Your question</label><textarea id="hubCoachQuestion" rows="3" placeholder="e.g. Suggest a beginner workout and vegetarian dinner"></textarea></div><button class="btn btn-primary" type="button" onclick="hubAskCoach()">💬 Ask My Coach</button><div id="hubCoachResponse" class="notice" aria-live="polite" style="white-space:pre-line;margin-top:14px">Your suggestions will appear here.</div><p class="subtitle">This is an offline rule-based helper, not a live AI or medical professional.</p></div>
-</section>
-
 </main>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -394,6 +357,7 @@ function renderAll() {
   const deg = pct * 3.6;
   $("progressRing").style.background = `conic-gradient(#9675e7 0deg ${deg}deg,#eee7f8 ${deg}deg 360deg)`;
   renderList("workoutHistory", workouts, "workout");
+  renderWorkoutHistory();
   renderList("foodHistory", meals, "food");
   renderChart("chart");
   renderChart("progressChart");
@@ -623,33 +587,430 @@ updateFitnessCards();
 </script>
 
 
-<!-- Duplicate standalone wellness sections removed: these features live in Wellness Hub. -->
+<section class="panel" id="wellness">
+  <h1>Wellness Hub 💜</h1>
+  <p class="subtitle">Your daily wellness tools, food ideas, and personal coach — all in one place.</p>
+  <div class="wellness-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;align-items:start;">
+<!-- Water Tracker -->
+<section class="card" id="water-tracker">
+  <h2>💧 Water Tracker</h2>
+  <p>Daily Goal: 8 glasses</p>
+  <div id="water-count">0 / 8 glasses</div>
+  <button onclick="changeWater(-1)">−</button>
+  <button onclick="changeWater(1)">+ Add Glass</button>
+</section>
+
+<!-- Daily Streak -->
+<section class="card" id="daily-streak">
+  <h2>🔥 Daily Streak</h2>
+  <p id="streak-count">0 days</p>
+  <button onclick="completeToday()">Complete Today</button>
+</section>
+
+<!-- Weekly Progress -->
+<section class="card" id="weekly-progress">
+  <h2>📊 Weekly Progress</h2>
+  <p>This week: <span id="weekly-count">0</span> completed days</p>
+</section>
+
+<style>
+#water-tracker, #daily-streak, #weekly-progress {
+  background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+  color: #4c1d95;
+  border-radius: 18px;
+  padding: 20px;
+  margin: 16px 0;
+  box-shadow: 0 4px 12px #8b5cf633;
+}
+#water-tracker button, #daily-streak button {
+  background: #8b5cf6;
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 5px;
+  cursor: pointer;
+}
+</style>
 
 <script>
-(function(){
- const today=()=>new Date().toLocaleDateString('en-CA');
- const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key)) ?? fallback}catch{return fallback}};
- function refresh(){
-  const d=today(); let w=read('fittrack_water',{}); if(w.date!==d) w={date:d,count:0};
-  document.getElementById('hubWaterCount').textContent=w.count||0; document.getElementById('hubWaterProgress').value=w.count||0;
-  const checks=read('fittrack_checkins',{}); const dates=Object.keys(checks).filter(x=>checks[x]);
-  let streak=0, cursor=new Date(); while(checks[cursor.toLocaleDateString('en-CA')]){streak++;cursor.setDate(cursor.getDate()-1)}
-  const weekStart=new Date(); weekStart.setHours(0,0,0,0); weekStart.setDate(weekStart.getDate()-((weekStart.getDay()+6)%7));
-  const weekDates=dates.filter(x=>{const dt=new Date(x+'T00:00:00');return dt>=weekStart&&dt<=new Date(d+'T23:59:59')});
-  document.getElementById('hubStreakCount').textContent=streak;document.getElementById('hubWeekCount').textContent=weekDates.length;document.getElementById('hubWeekProgress').value=weekDates.length;
- }
- window.hubAddWater=function(n){let d=today(),w=read('fittrack_water',{});if(w.date!==d)w={date:d,count:0};w.count=Math.max(0,Math.min(8,(w.count||0)+n));localStorage.setItem('fittrack_water',JSON.stringify(w));refresh()};
- window.hubResetWater=function(){localStorage.setItem('fittrack_water',JSON.stringify({date:today(),count:0}));refresh()};
- window.hubCheckIn=function(){let d=today(),checks=read('fittrack_checkins',{});if(checks[d]){document.getElementById('hubCheckinMessage').textContent='You have already checked in today 💜';return}checks[d]=true;localStorage.setItem('fittrack_checkins',JSON.stringify(checks));document.getElementById('hubCheckinMessage').textContent='Nice work — today is checked in! ✨';refresh()};
- const meals={Veg:{b:['Idli with sambar','Vegetable dosa','Oats with fruit'],l:['Rice with sambar and vegetables','Chapati with dal','Curd rice with vegetables'],d:['Vegetable dosa','Chapati with vegetable kurma','Paneer wrap']},'Non-Veg':{b:['Egg dosa','Boiled eggs with toast','Vegetable omelette'],l:['Chicken with rice and vegetables','Egg rice with vegetables','Fish with rice'],d:['Egg dosa','Grilled chicken wrap','Chicken soup with toast']},Both:{b:['Idli with sambar','Egg dosa','Oats with fruit'],l:['Rice with dal and vegetables','Chicken with rice','Chapati with paneer'],d:['Vegetable dosa','Grilled chicken wrap','Paneer wrap']}};
- function mealSuggestions(){let m=meals[document.getElementById('hubFoodType').value]||meals.Veg;let i=new Date().getDate()%3;document.getElementById('hubBreakfast').textContent=m.b[i];document.getElementById('hubLunch').textContent=m.l[(i+1)%3];document.getElementById('hubDinner').textContent=m.d[(i+2)%3];localStorage.setItem('fittrack_food_preference',document.getElementById('hubFoodType').value)}
- document.getElementById('hubFoodType').value=localStorage.getItem('fittrack_food_preference')||'Veg';document.getElementById('hubFoodType').addEventListener('change',mealSuggestions);mealSuggestions();
- const saved=read('aiFitFoodPlan',{});['Breakfast','Lunch','Dinner'].forEach(k=>{const el=document.getElementById('hubPlan'+k);if(el)el.value=saved[k.toLowerCase()]||''});
- document.getElementById('hubFoodPlanForm').addEventListener('submit',e=>{e.preventDefault();localStorage.setItem('aiFitFoodPlan',JSON.stringify({breakfast:document.getElementById('hubPlanBreakfast').value,lunch:document.getElementById('hubPlanLunch').value,dinner:document.getElementById('hubPlanDinner').value}));document.getElementById('hubFoodSaved').textContent='Food plan saved on this device 💜'});
- window.hubAskCoach=function(){const q=document.getElementById('hubCoachQuestion').value.trim().toLowerCase(),goal=document.getElementById('hubCoachGoal').value,pref=document.getElementById('hubCoachPreference').value;let out=[];if(!q){document.getElementById('hubCoachResponse').textContent='💜 Type your question first!';return}if(/workout|exercise|gym|fitness/.test(q)||goal==='beginner'){out.push('🏃 WORKOUT\n• Warm up with easy walking for 5 minutes.\n• Try comfortable chair squats, wall push-ups and marching.\n• Cool down gently and rest when needed.')}if(/food|meal|breakfast|lunch|dinner|eat|diet/.test(q)||goal==='weight loss'||goal==='muscle gain'){let f=pref==='Veg'?['Idli with sambar','Dal with rice and vegetables','Paneer or chickpea wrap']:pref==='Non-Veg'?['Egg dosa','Chicken with rice and vegetables','Egg sandwich']:['Idli with sambar','Egg dosa','Dal with rice and vegetables','Chicken with rice'];out.push('🥗 FOOD IDEAS\n• '+f.join('\n• '))}if(/water|hydration/.test(q))out.push('💧 Drink water regularly; needs vary with activity, heat and health.');if(/sleep|rest|recovery|tired/.test(q))out.push('🌙 Keep a regular sleep schedule and allow recovery days.');if(!out.length)out.push('🌟 Choose balanced meals, comfortable movement, hydration and enough rest. Small steps count!');if(goal==='weight loss')out.push('🎯 Focus on sustainable habits and balanced meals, not crash diets.');if(goal==='muscle gain')out.push('🎯 Pair suitable strength training with enough food, protein and recovery.');out.push('ℹ️ General suggestions only, not medical advice.');document.getElementById('hubCoachResponse').textContent=out.join('\n\n')};
- refresh();
-})();
+let water = Number(localStorage.getItem('fitWater') || 0);
+let streak = Number(localStorage.getItem('fitStreak') || 0);
+let completed = JSON.parse(localStorage.getItem('fitWeek') || '[]');
+
+function showProgress() {
+  document.getElementById('water-count').textContent =
+    water + ' / 8 glasses';
+  document.getElementById('streak-count').textContent =
+    streak + ' days';
+  document.getElementById('weekly-count').textContent =
+    completed.length;
+}
+
+function changeWater(amount) {
+  water = Math.max(0, Math.min(8, water + amount));
+  localStorage.setItem('fitWater', water);
+  showProgress();
+}
+
+function completeToday() {
+  const today = new Date().toISOString().slice(0, 10);
+  if (!completed.includes(today)) {
+    completed.push(today);
+    completed = completed.slice(-7);
+    streak++;
+    localStorage.setItem('fitWeek', JSON.stringify(completed));
+    localStorage.setItem('fitStreak', streak);
+  }
+  showProgress();
+}
+
+showProgress();
 </script>
 
+<!-- Food Preference -->
+<section class="card" id="food-preference">
+  <h2>🥗 Food Preference</h2>
+
+  <label for="foodType">Choose your food type:</label>
+  <select id="foodType">
+    <option value="Veg">🥦 Vegetarian</option>
+    <option value="Non-Veg">🍗 Non-Vegetarian</option>
+    <option value="Both">🍽️ Both</option>
+  </select>
+   
+<div id="automatic-meal-suggestions" style="margin-top:16px;padding:15px;border-radius:12px;background:#f3e8ff;color:#4c1d95;">
+  <h3>🍱 Your Daily Meal Suggestions</h3>
+  <p><strong>🌅 Breakfast:</strong> <span id="auto-breakfast"></span></p>
+  <p><strong>☀️ Lunch:</strong> <span id="auto-lunch"></span></p>
+  <p><strong>🌙 Dinner:</strong> <span id="auto-dinner"></span></p>
+</div>
+
+<script>
+function updateAutomaticMeals() {
+  const type = document.getElementById('foodType').value;
+
+  const veg = {
+    breakfast: ['Idli with sambar', 'Vegetable dosa', 'Oats with fruit'],
+    lunch: ['Rice with sambar and vegetables', 'Chapati with dal', 'Curd rice with vegetables'],
+    dinner: ['Vegetable dosa', 'Chapati with vegetable kurma', 'Paneer wrap']
+  };
+
+  const nonVeg = {
+    breakfast: ['Egg dosa', 'Boiled eggs with toast', 'Vegetable omelette'],
+    lunch: ['Chicken with rice and vegetables', 'Egg rice with vegetables', 'Fish with rice'],
+    dinner: ['Egg dosa', 'Grilled chicken wrap', 'Chicken soup with toast']
+  };
+
+  function chooseMeal(meals, index) {
+    return meals[index % meals.length];
+  }
+
+  const day = new Date().getDate();
+  const breakfasts = type === 'Veg' ? veg.breakfast :
+    type === 'Non-Veg' ? nonVeg.breakfast :
+    [...veg.breakfast, ...nonVeg.breakfast];
+
+  const lunches = type === 'Veg' ? veg.lunch :
+    type === 'Non-Veg' ? nonVeg.lunch :
+    [...veg.lunch, ...nonVeg.lunch];
+
+  const dinners = type === 'Veg' ? veg.dinner :
+    type === 'Non-Veg' ? nonVeg.dinner :
+    [...veg.dinner, ...nonVeg.dinner];
+
+  document.getElementById('auto-breakfast').textContent = chooseMeal(breakfasts, day);
+document.getElementById('auto-lunch').textContent = chooseMeal(lunches, day + 1);
+document.getElementById('auto-dinner').textContent = chooseMeal(dinners, day + 2);
+}
+
+document.getElementById('foodType').addEventListener('change', updateAutomaticMeals);
+updateAutomaticMeals();
+</script>
+
+  <h3>🍱 Meals for <span id="today-date"></span></h3>
+
+<script>
+document.getElementById('today-date').textContent =
+  new Date().toLocaleDateString('en-IN', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+</script>
+ <div id="meal-suggestions-inline" style="margin:12px 0;padding:14px;border-radius:12px;background:#f3e8ff;color:#4c1d95;">
+  <p>🌅 <strong>Suggested Breakfast:</strong> <span id="suggested-breakfast">Idli with sambar</span></p>
+  <p>☀️ <strong>Suggested Lunch:</strong> <span id="suggested-lunch">Rice with dal and vegetables</span></p>
+  <p>🌙 <strong>Suggested Dinner:</strong> <span id="suggested-dinner">Chapati with paneer</span></p>
+</div> 
+
+  <label for="breakfast">Breakfast</label>
+  <input id="breakfast" placeholder="e.g. Idli, dosa, eggs">
+
+  <label for="lunch">Lunch</label>
+  <input id="lunch" placeholder="e.g. Rice, vegetables, chicken">
+
+  <label for="dinner">Dinner</label>
+  <input id="dinner" placeholder="e.g. Chapati, paneer">
+
+  <button onclick="saveFoodPlan()">Save Food Plan 💜</button>
+  <p id="foodSaved"></p>
+</section>
+
+<style>
+#food-preference {
+  background: linear-gradient(135deg, #f3e8ff, #fce7f3);
+  color: #4c1d95;
+  border-radius: 18px;
+  padding: 20px;
+  margin: 16px 0;
+}
+#food-preference label,
+#food-preference input,
+#food-preference select {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 8px 0;
+}
+#food-preference input,
+#food-preference select {
+  padding: 10px;
+  border: 1px solid #c4b5fd;
+  border-radius: 8px;
+}
+#food-preference button {
+  background: #8b5cf6;
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 10px;
+}
+</style>
+
+<script>
+function saveFoodPlan() {
+  const plan = {
+    type: document.getElementById('foodType').value,
+    breakfast: document.getElementById('breakfast').value,
+    lunch: document.getElementById('lunch').value,
+    dinner: document.getElementById('dinner').value
+  };
+
+  localStorage.setItem('aiFitFoodPlan', JSON.stringify(plan));
+  document.getElementById('foodSaved').textContent =
+    '💜 Food plan saved successfully!';
+}
+
+(function loadFoodPlan() {
+  const plan = JSON.parse(
+    localStorage.getItem('aiFitFoodPlan') || '{}'
+  );
+  if (plan.type) document.getElementById('foodType').value = plan.type;
+  ['breakfast', 'lunch', 'dinner'].forEach(meal => {
+    if (plan[meal]) document.getElementById(meal).value = plan[meal];
+  });
+})();
+</script>
+ 
+ 
+
+
+<script>
+function suggestAIFood() {
+  const request = document.getElementById('ai-food-request').value.trim().toLowerCase();
+  const preference = document.getElementById('ai-food-type').value;
+  const answer = document.getElementById('ai-food-answer');
+
+  if (!request) {
+    answer.textContent = '💜 First, tell me what food you want or what ingredients you have!';
+    return;
+  }
+
+  const vegFoods = [
+    'Idli with sambar',
+    'Vegetable dosa',
+    'Paneer and vegetable wrap',
+    'Dal with rice',
+    'Chickpea salad',
+    'Oats with fruit',
+    'Vegetable sandwich',
+    'Chapati with vegetable kurma'
+  ];
+
+  const nonVegFoods = [
+    'Boiled eggs with whole-wheat toast',
+    'Chicken with rice and vegetables',
+    'Egg dosa with sambar',
+    'Grilled chicken wrap',
+    'Egg vegetable sandwich',
+    'Chicken soup with whole-wheat toast'
+  ];
+
+  let foods = preference === 'Veg' ? vegFoods :
+              preference === 'Non-Veg' ? nonVegFoods :
+              [...vegFoods, ...nonVegFoods];
+
+  if (request.includes('breakfast')) {
+    foods = foods.filter(f => /idli|dosa|oats|egg|sandwich/i.test(f));
+  } else if (request.includes('lunch')) {
+    foods = foods.filter(f => /rice|chapati|chicken|dal|chickpea/i.test(f));
+  } else if (request.includes('dinner')) {
+    foods = foods.filter(f => /dosa|wrap|soup|chapati|salad/i.test(f));
+  }
+
+  const ingredients = ['paneer', 'egg', 'eggs', 'chicken', 'rice', 'bread', 'oats', 'potato', 'tomato', 'dal', 'chickpea'];
+  const matched = ingredients.filter(item => request.includes(item));
+
+  if (matched.length) {
+    const ingredientIdeas = {
+      paneer: 'Paneer and vegetable wrap',
+      egg: 'Egg vegetable sandwich',
+      eggs: 'Boiled eggs with whole-wheat toast',
+      chicken: 'Chicken with rice and vegetables',
+      rice: 'Rice with dal and vegetables',
+      bread: 'Vegetable sandwich',
+      oats: 'Oats with fruit',
+      potato: 'Potato masala dosa',
+      tomato: 'Tomato dosa or tomato rice',
+      dal: 'Dal with rice',
+      chickpea: 'Chickpea salad'
+    };
+    foods = matched.map(item => ingredientIdeas[item]).filter(Boolean);
+  }
+
+  if (request.includes('weight loss') || request.includes('lose weight')) {
+    foods = foods.filter(f => /idli|sambar|vegetable|dal|chickpea|oats|soup|grilled|wrap/i.test(f));
+  }
+
+  if (request.includes('high protein') || request.includes('protein')) {
+    foods = foods.filter(f => /paneer|egg|chicken|dal|chickpea/i.test(f));
+  }
+
+  if (!foods.length) {
+    foods = preference === 'Veg' ? vegFoods :
+            preference === 'Non-Veg' ? nonVegFoods :
+            [...vegFoods, ...nonVegFoods];
+  }
+
+  const uniqueFoods = [...new Set(foods)].slice(0, 4);
+
+  answer.textContent =
+    '💜 Food ideas based on your request:\n\n' +
+    uniqueFoods.map((food, i) => (i + 1) + '. ' + food).join('\n') +
+    '\n\n🥗 Choose a balanced portion with vegetables and water. ' +
+    '\n\nNote: These are smart suggestions, not a live AI response. Tell me more ingredients or your meal preference for different ideas.';
+}
+</script>
+ 
+<!-- All-in-One Food + Fitness Coach -->
+<section id="fit-coach" style="margin:24px 0;padding:20px;border-radius:18px;background:#ede9fe;color:#2e1065;">
+  <h2>💜 FitTrack Smart Coach</h2>
+  <p>Tell me your fitness goal, food preference, or workout question!</p>
+   
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:18px;margin:18px 0;padding:16px;border-radius:16px;background:linear-gradient(135deg,#f5eaff,#e9ddff);">
+  <div style="flex:1;min-width:180px;text-align:center;">
+    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=500&q=80" alt="Fitness coach training" style="width:100%;max-width:260px;height:250px;object-fit:cover;border-radius:16px;">
+    <h3 style="color:#6d28d9;margin:10px 0 4px;">🏋️ Your FitTrack Coach</h3>
+    <p style="margin:0;color:#4c1d95;">Small Steps, Big Changes 💜</p>
+  </div>
+  <div style="flex:1;min-width:180px;color:#4c1d95;">
+    <p>🥗 Healthy Food</p>
+    <p>💪 Active Lifestyle</p>
+    <p>💧 Stay Hydrated</p>
+    <p>🌙 Better Sleep</p>
+    <p><strong>Believe in yourself!</strong></p>
+  </div>
+</div>
+
+  <label for="coach-goal">Your Goal</label>
+  <select id="coach-goal" style="display:block;width:100%;padding:10px;margin:8px 0;">
+    <option value="general">Stay healthy</option>
+    <option value="weight loss">Weight loss</option>
+    <option value="muscle gain">Muscle gain</option>
+    <option value="fitness">Improve fitness</option>
+    <option value="beginner">Beginner workout</option>
+  </select>
+
+  <label for="coach-preference">Food Preference</label>
+  <select id="coach-preference" style="display:block;width:100%;padding:10px;margin:8px 0;">
+    <option value="Veg">Vegetarian</option>
+    <option value="Non-Veg">Non-Vegetarian</option>
+    <option value="Both">Both</option>
+  </select>
+
+  <textarea id="coach-question" rows="3" placeholder="Example: Suggest a simple workout and healthy dinner..." style="box-sizing:border-box;width:100%;padding:12px;border-radius:10px;"></textarea>
+
+  <button type="button" onclick="askFitCoach()" style="margin-top:10px;padding:12px 18px;border:0;border-radius:10px;background:#7c3aed;color:white;font-weight:bold;">💬 Ask My Coach</button>
+
+  <div id="coach-response" aria-live="polite" style="margin-top:16px;line-height:1.7;white-space:pre-line;"></div>
+</section>
+
+<script>
+function askFitCoach() {
+  const goal = document.getElementById('coach-goal').value;
+  const preference = document.getElementById('coach-preference').value;
+  const question = document.getElementById('coach-question').value.trim().toLowerCase();
+  const response = document.getElementById('coach-response');
+
+  if (!question) {
+    response.textContent = '💜 Type your goal or question first!';
+    return;
+  }
+
+  let result = '💜 YOUR PERSONAL FITTRACK PLAN\n\n';
+
+  if (/workout|exercise|gym|fitness|beginner|exercise plan/.test(question) || goal === 'beginner' || goal === 'fitness') {
+    result += '🏋️ WORKOUT\n';
+    result += '• Warm up with easy walking or marching for 5 minutes.\n';
+    result += '• Try 8–10 chair squats, wall push-ups and gentle marching.\n';
+    result += '• Cool down with gentle stretches.\n';
+    result += '• Start at a comfortable level and rest when needed.\n\n';
+  }
+
+  if (/food|meal|breakfast|lunch|dinner|eat|recipe|ingredient|diet/.test(question) || goal === 'weight loss' || goal === 'muscle gain') {
+    result += '🥗 FOOD IDEAS\n';
+
+    if (preference === 'Veg' || preference === 'Both') {
+      result += '• Idli with sambar\n• Dal with rice and vegetables\n• Paneer or chickpea wrap\n• Oats with fruit\n';
+    }
+
+    if (preference === 'Non-Veg' || preference === 'Both') {
+      result += '• Egg dosa\n• Chicken with rice and vegetables\n• Egg sandwich\n';
+    }
+
+    result += '\n';
+  }
+
+  if (/water|hydration/.test(question)) {
+    result += '💧 WATER\nDrink water regularly throughout the day. Needs vary with activity, heat and health.\n\n';
+  }
+
+  if (/sleep|rest|recovery|tired/.test(question)) {
+    result += '😴 REST & RECOVERY\n• Aim for a regular sleep schedule.\n• Include recovery days and avoid pushing through pain.\n\n';
+  }
+
+  if (/motivation|lazy|motivate/.test(question)) {
+    result += '🌟 DAILY MOTIVATION\nSmall steps count! Choose one achievable healthy habit today and build consistency.\n\n';
+  }
+
+  if (result === '💜 YOUR PERSONAL FITTRACK PLAN\n\n') {
+    result += '🌟 GENERAL ADVICE\n• Eat balanced meals with vegetables, protein and suitable portions.\n• Stay active at a comfortable level.\n• Sleep well and drink water regularly.\n• Ask about workouts, food, hydration or recovery for more specific suggestions.\n\n';
+  }
+
+  if (goal === 'weight loss') {
+    result += '🎯 GOAL TIP\nFocus on sustainable habits and balanced meals, not crash diets.\n\n';
+  } else if (goal === 'muscle gain') {
+    result += '🎯 GOAL TIP\nCombine appropriate strength training, enough food and protein, and recovery.\n\n';
+  }
+
+  result += 'ℹ️ This is an offline rule-based coach, not a live AI or medical professional. Adapt exercises to your ability and seek professional advice for health concerns.';
+
+  response.textContent = result;
+}
+</script>
+  </div>
+</section>
 </body>
 </html>
